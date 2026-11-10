@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winners Football Competition - Social Media Banner Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800;900&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --primary: #2563eb;
+      --accent: #f59e0b;
+      --text: #f3f4f6;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+      max-width: 850px;
+    }
+    .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #60a5fa;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    p.subtitle {
+      color: #9ca3af;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      background: #172033;
+      padding: 6px;
+      border-radius: 10px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn.active {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .tab-pane {
+      display: none;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .tab-pane.active {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Artwork Preview */
+    .artwork-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 580px;
+      width: 100%;
+    }
+    .artwork-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      background: #000;
+    }
+    .artwork-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Canvas Preview */
+    .canvas-wrapper {
+      position: relative;
+      width: 540px;
+      height: 540px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+    .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-download {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    }
+    .btn-download:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+    }
+    .btn-reset {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e7eb;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Controls */
+    .controls-panel {
+      flex: 1;
+      min-width: 320px;
+      max-width: 520px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .controls-panel h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #f3f4f6;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      background: #0b1120;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .info-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+    .info-card h3 {
+      font-size: 0.95rem;
+      color: #fbbf24;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-card ul {
+      list-style-type: none;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .info-card li strong {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-top">⚽ Matchday Visibility Kit</div>
+    <h1>Winners Football Competition Banner Suite</h1>
+    <p class="subtitle">Square 1:1 format (1080×1080px) tailored for maximum engagement on Instagram, Facebook, and WhatsApp.</p>
+  </header>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('generatedTab', this)">
+      🎨 AI Rendered Poster Artwork
+    </button>
+    <button class="tab-btn" onclick="switchTab('canvasTab', this)">
+      ⚡ Live Editable Canvas Banner
+    </button>
+  </div>
+
+  <!-- Tab 1: AI Generated Art Graphic -->
+  <div id="generatedTab" class="tab-pane active">
+    <div class="artwork-container">
+      <div class="artwork-card">
+        <img src="/winners_football_competition_banner.jpg" alt="Winners Football Competition Social Media Banner">
+      </div>
+      <div class="button-group">
+        <a href="/winners_football_competition_banner.jpg" download="winners-football-competition-banner.jpg" class="btn btn-download">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download Graphic (High-Res)
+        </a>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <h2>Banner Specifications</h2>
+      <div class="info-card" style="margin-top:0;">
+        <h3>📌 Event Overview</h3>
+        <ul>
+          <li><strong>Tournament:</strong> Winners Football Competition (WFC) - First Edition</li>
+          <li><strong>Date:</strong> 20th November</li>
+          <li><strong>Kickoff Time:</strong> 2:00 PM Prompt</li>
+          <li><strong>Venue:</strong> Orerokpe / Ovoirie School Field, Delta State</li>
+          <li><strong>Tournament Format:</strong> 5-a-Side Monkey Post (Knockout)</li>
+          <li><strong>Prize Pool:</strong> ₦80,000 (1st: ₦50k | 2nd: ₦20k | 3rd: ₦10k)</li>
+          <li><strong>Admission:</strong> Free Entry for Spectators & Fans</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>💡 Social Media Visibility Best Practices</h3>
+        <ul>
+          <li><strong>Caption Recommendation:</strong> "⚽ A GOOD KICK IN THE GRASS! Brace yourself for the ultimate 5-a-side Monkey Post showdown. Catch all the action live on the 20th at Orerokpe/Ovoirie School Field from 2:00 PM. Admission is completely FREE! Who takes home the ₦80,000 crown? 🔥 #WinnersFootball #SDUOzoro #GrassrootsFootball"</li>
+          <li><strong>Optimal Post Times:</strong> 12:00 PM – 2:00 PM and 6:00 PM – 8:30 PM for peak campus student engagement.</li>
+          <li><strong>Channels:</strong> Post to Instagram Feed & Stories, WhatsApp Status groups, and Facebook pages.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Live Editable Vector Canvas -->
+  <div id="canvasTab" class="tab-pane">
+    <div class="artwork-container">
+      <div class="canvas-wrapper">
+        <canvas id="bannerCanvas" width="1080" height="1080"></canvas>
+      </div>
+      <div class="button-group">
+        <button id="downloadBtn" class="btn btn-download">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download Custom PNG (1080×1080)
+        </button>
+        <button id="refreshBtn" class="btn btn-reset">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Redraw
+        </button>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <h2>Customize Canvas Banner</h2>
+      
+      <div class="form-group">
+        <label>Tournament Header</label>
+        <input type="text" id="tournamentInput" value="WINNERS FOOTBALL COMPETITION">
+      </div>
+
+      <div class="form-group">
+        <label>Main Headline</label>
+        <input type="text" id="headlineInput" value="A GOOD KICK IN THE GRASS!">
+      </div>
+
+      <div class="form-group">
+        <label>Subhead / Tagline</label>
+        <input type="text" id="subheadInput" value="BRACE YOURSELF">
+      </div>
+
+      <div class="row-2">
+        <div class="form-group">
+          <label>Event Date</label>
+          <input type="text" id="dateInput" value="20th November">
+        </div>
+        <div class="form-group">
+          <label>Kickoff Time</label>
+          <input type="text" id="timeInput" value="2:00 PM">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Venue / Location</label>
+        <input type="text" id="venueInput" value="Orerokpe / Ovoirie School Field">
+      </div>
+
+      <div class="form-group">
+        <label>Prize & Format Highlights</label>
+        <input type="text" id="badgeInput" value="₦80,000 PRIZE POOL • 5-A-SIDE • FREE ENTRY">
+      </div>
+
+      <div class="form-group">
+        <label>Social Media Handles</label>
+        <input type="text" id="socialInput" value="@WinnersFootballSDU • @WinnersFootballWFC">
+      </div>
+
+      <div class="info-card">
+        <h3>✨ Real-Time Canvas Rendering</h3>
+        <p style="font-size: 0.85rem; color:#94a3b8;">
+          Changes in the input boxes immediately redraw the 1080×1080 canvas. The exported image maintains crisp vector styling and high-resolution typography.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      el.classList.add('active');
+
+      if (tabId === 'canvasTab') {
+        drawBanner();
+      }
+    }
+
+    const canvas = document.getElementById('bannerCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const tournamentInput = document.getElementById('tournamentInput');
+    const headlineInput = document.getElementById('headlineInput');
+    const subheadInput = document.getElementById('subheadInput');
+    const dateInput = document.getElementById('dateInput');
+    const timeInput = document.getElementById('timeInput');
+    const venueInput = document.getElementById('venueInput');
+    const badgeInput = document.getElementById('badgeInput');
+    const socialInput = document.getElementById('socialInput');
+
+    function drawBanner() {
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.fillStyle = '#0a0f1d';
+      ctx.fillRect(0, 0, W, H);
+
+      const bgGrad = ctx.createRadialGradient(W * 0.7, H * 0.35, 50, W * 0.7, H * 0.35, 600);
+      bgGrad.addColorStop(0, '#1e3a8a');
+      bgGrad.addColorStop(0.5, '#0f172a');
+      bgGrad.addColorStop(1, '#050811');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Angled sports stripes
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1.5;
+      for (let x = -H; x < W + H; x += 36) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + H * 0.45, H);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Dynamic Royal Blue Paint Brush / Splatter Wave
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(-50, H * 0.82);
+      ctx.bezierCurveTo(W * 0.2, H * 0.88, W * 0.35, H * 0.75, W * 0.52, H * 0.62);
+      ctx.bezierCurveTo(W * 0.68, H * 0.5, W * 0.85, H * 0.48, W + 50, H * 0.35);
+      ctx.lineTo(W + 50, H * 0.9);
+      ctx.bezierCurveTo(W * 0.8, H * 0.95, W * 0.5, H * 0.94, W * 0.2, H * 0.9);
+      ctx.lineTo(-50, H * 0.95);
+      ctx.closePath();
+      
+      const brushGrad = ctx.createLinearGradient(0, H * 0.5, W, H * 0.8);
+      brushGrad.addColorStop(0, '#1d4ed8');
+      brushGrad.addColorStop(0.5, '#2563eb');
+      brushGrad.addColorStop(1, '#1e40af');
+      ctx.fillStyle = brushGrad;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-20, H * 0.42);
+      ctx.bezierCurveTo(W * 0.15, H * 0.32, W * 0.38, H * 0.38, W * 0.55, H * 0.25);
+      ctx.bezierCurveTo(W * 0.75, H * 0.15, W * 0.85, H * 0.22, W + 50, H * 0.18);
+      ctx.lineTo(W + 50, H * 0.55);
+      ctx.bezierCurveTo(W * 0.75, H * 0.65, W * 0.4, H * 0.65, -20, H * 0.75);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(30, 64, 175, 0.45)';
+      ctx.fill();
+
+      // Paint splatters
+      ctx.fillStyle = '#3b82f6';
+      const splatters = [
+        [W*0.12, H*0.35, 12], [W*0.18, H*0.28, 8], [W*0.08, H*0.48, 14],
+        [W*0.48, H*0.22, 10], [W*0.58, H*0.18, 7], [W*0.62, H*0.28, 9],
+        [W*0.82, H*0.42, 15], [W*0.88, H*0.32, 11], [W*0.92, H*0.48, 8],
+        [W*0.32, H*0.75, 16], [W*0.45, H*0.82, 12]
+      ];
+      splatters.forEach(([x, y, r]) => {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Kicking player silhouette & soccer ball
+      ctx.save();
+      const grassGrad = ctx.createLinearGradient(0, H * 0.6, 0, H);
+      grassGrad.addColorStop(0, 'rgba(15, 23, 42, 0)');
+      grassGrad.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
+      ctx.fillStyle = grassGrad;
+      ctx.fillRect(0, H * 0.6, W * 0.6, H * 0.4);
+
+      const legX = W * 0.22;
+      const legY = H * 0.58;
+
+      ctx.save();
+      ctx.translate(legX, legY);
+      
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(30, 180, 120, 24, -0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Back leg
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.moveTo(-70, -100);
+      ctx.lineTo(-40, 40);
+      ctx.lineTo(-30, 150);
+      ctx.lineTo(-75, 155);
+      ctx.lineTo(-85, 40);
+      ctx.closePath();
+      ctx.fill();
+      
+      // White sock
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.moveTo(-40, 50);
+      ctx.lineTo(-30, 140);
+      ctx.lineTo(-70, 140);
+      ctx.lineTo(-80, 50);
+      ctx.closePath();
+      ctx.fill();
+
+      // Kicking Leg
+      ctx.fillStyle = '#334155';
+      ctx.beginPath();
+      ctx.moveTo(-30, -120);
+      ctx.lineTo(80, -20);
+      ctx.lineTo(130, 80);
+      ctx.lineTo(75, 95);
+      ctx.lineTo(30, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // White Sock
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(70, -10);
+      ctx.lineTo(125, 75);
+      ctx.lineTo(85, 90);
+      ctx.lineTo(35, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Blue team stripes
+      ctx.fillStyle = '#2563eb';
+      ctx.fillRect(45, 8, 38, 7);
+      ctx.fillRect(52, 20, 40, 7);
+
+      // Soccer cleat
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.moveTo(125, 75);
+      ctx.lineTo(170, 105);
+      ctx.lineTo(195, 130);
+      ctx.lineTo(135, 135);
+      ctx.lineTo(85, 90);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(115, 95);
+      ctx.quadraticCurveTo(150, 110, 175, 120);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // SOCCER BALL
+      const ballX = W * 0.38;
+      const ballY = H * 0.72;
+      const ballR = 64;
+
+      for (let i = 4; i >= 1; i--) {
+        ctx.strokeStyle = `rgba(245, 158, 11, ${0.12 * i})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(ballX - i * 14, ballY + i * 4, ballR + i * 2, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      const ballGrad = ctx.createRadialGradient(ballX - 20, ballY - 20, 10, ballX, ballY, ballR);
+      ballGrad.addColorStop(0, '#ffffff');
+      ballGrad.addColorStop(0.7, '#e2e8f0');
+      ballGrad.addColorStop(1, '#94a3b8');
+      ctx.fillStyle = ballGrad;
+      ctx.beginPath();
+      ctx.arc(ballX, ballY, ballR, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#0f172a';
+      drawPolygon(ctx, ballX, ballY, 19, 5, 0.3);
+      ctx.fill();
+      const patchAngles = [0, 1.25, 2.5, 3.75, 5.0];
+      patchAngles.forEach(ang => {
+        const px = ballX + Math.cos(ang) * 44;
+        const py = ballY + Math.sin(ang) * 44;
+        drawPolygon(ctx, px, py, 14, 5, ang);
+        ctx.fill();
+      });
+
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(ballX, ballY, ballR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#fbbf24';
+      const sparks = [
+        [ballX + 45, ballY - 30, 4], [ballX + 65, ballY - 15, 6],
+        [ballX + 80, ballY - 50, 5], [ballX + 50, ballY - 60, 3],
+        [ballX + 90, ballY + 10, 5], [ballX + 70, ballY + 30, 4]
+      ];
+      sparks.forEach(([sx, sy, sr]) => {
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      // Top Emblem
+      ctx.save();
+      const emblemX = W * 0.72;
+      const emblemY = H * 0.12;
+
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+      ctx.beginPath();
+      ctx.arc(emblemX, emblemY, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(emblemX, emblemY, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#0f172a';
+      drawPolygon(ctx, emblemX, emblemY, 6, 5, 0);
+      ctx.fill();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '800 22px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.letterSpacing = '2px';
+      ctx.fillText(tournamentInput.value.toUpperCase(), emblemX + 44, emblemY - 2);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 14px Inter, sans-serif';
+      ctx.fillText('SOUTHERN DELTA UNIVERSITY, OZORO • FIRST EDITION', emblemX + 44, emblemY + 18);
+      ctx.restore();
+
+      // Main Headline
+      ctx.save();
+      const textStartX = W * 0.50;
+      let textCurrentY = H * 0.28;
+
+      ctx.textAlign = 'left';
+      ctx.font = '900 68px "Anton", "Teko", Impact, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 4;
+      ctx.shadowBlur = 8;
+
+      const headlineText = headlineInput.value.toUpperCase();
+      if (headlineText.includes('GRASS')) {
+        const parts = headlineText.split('IN THE');
+        if (parts.length === 2) {
+          ctx.fillText(parts[0].trim(), textStartX, textCurrentY);
+          textCurrentY += 72;
+          ctx.fillStyle = '#60a5fa';
+          ctx.fillText('IN THE' + parts[1], textStartX, textCurrentY);
+        } else {
+          ctx.fillText(headlineText, textStartX, textCurrentY);
+        }
+      } else {
+        ctx.fillText(headlineText, textStartX, textCurrentY);
+      }
+      ctx.restore();
+
+      // Subhead Tagline
+      textCurrentY += 36;
+      ctx.save();
+      const subheadText = subheadInput.value.toUpperCase();
+      ctx.font = '900 28px Inter, sans-serif';
+      const subheadWidth = ctx.measureText(subheadText).width + 36;
+
+      const subGrad = ctx.createLinearGradient(textStartX, textCurrentY - 26, textStartX + subheadWidth, textCurrentY + 8);
+      subGrad.addColorStop(0, '#f59e0b');
+      subGrad.addColorStop(1, '#d97706');
+      ctx.fillStyle = subGrad;
+      ctx.beginPath();
+      ctx.moveTo(textStartX, textCurrentY - 24);
+      ctx.lineTo(textStartX + subheadWidth, textCurrentY - 24);
+      ctx.lineTo(textStartX + subheadWidth - 14, textCurrentY + 12);
+      ctx.lineTo(textStartX - 14, textCurrentY + 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#090d16';
+      ctx.fillText(subheadText, textStartX + 6, textCurrentY);
+      ctx.restore();
+
+      // Details Card
+      textCurrentY += 52;
+      ctx.save();
+      const cardWidth = 480;
+      const cardHeight = 175;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.4)';
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, textStartX - 10, textCurrentY, cardWidth, cardHeight, 10);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b';
+      roundRect(ctx, textStartX - 10, textCurrentY, 6, cardHeight, { tl: 10, bl: 10, tr: 0, br: 0 });
+      ctx.fill();
+
+      const row1Y = textCurrentY + 44;
+
+      ctx.fillStyle = '#60a5fa';
+      ctx.font = '800 13px Inter, sans-serif';
+      ctx.fillText('📅 MATCH DATE', textStartX + 18, row1Y - 18);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 24px Inter, sans-serif';
+      ctx.fillText(dateInput.value.toUpperCase(), textStartX + 18, row1Y + 10);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(textStartX + 225, textCurrentY + 16);
+      ctx.lineTo(textStartX + 225, textCurrentY + 74);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '800 13px Inter, sans-serif';
+      ctx.fillText('⏰ KICKOFF TIME', textStartX + 245, row1Y - 18);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 24px Inter, sans-serif';
+      ctx.fillText(timeInput.value.toUpperCase(), textStartX + 245, row1Y + 10);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.beginPath();
+      ctx.moveTo(textStartX + 18, textCurrentY + 84);
+      ctx.lineTo(textStartX + cardWidth - 25, textCurrentY + 84);
+      ctx.stroke();
+
+      const row2Y = textCurrentY + 116;
+      ctx.fillStyle = '#f87171';
+      ctx.font = '800 13px Inter, sans-serif';
+      ctx.fillText('📍 VENUE & LOCATION', textStartX + 18, row2Y - 10);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '800 18px Inter, sans-serif';
+      ctx.fillText(venueInput.value.toUpperCase(), textStartX + 18, row2Y + 16);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 12px Inter, sans-serif';
+      ctx.fillText('Delta State, Nigeria • Southern Delta University Campus Ground', textStartX + 18, row2Y + 36);
+
+      ctx.restore();
+
+      // Badges
+      textCurrentY += cardHeight + 22;
+      ctx.save();
+      const badgesText = badgeInput.value;
+      const badges = badgesText.split('•').map(s => s.trim());
+
+      let badgeX = textStartX - 10;
+      badges.forEach((bText, idx) => {
+        ctx.font = '800 13px Inter, sans-serif';
+        const bw = ctx.measureText(bText).width + 24;
+
+        if (idx === 0) {
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+          ctx.strokeStyle = '#f59e0b';
+        } else {
+          ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+          ctx.strokeStyle = '#3b82f6';
+        }
+        ctx.lineWidth = 1;
+        roundRect(ctx, badgeX, textCurrentY, bw, 32, 16);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = (idx === 0) ? '#fbbf24' : '#e0f2fe';
+        ctx.fillText(bText, badgeX + 12, textCurrentY + 20);
+
+        badgeX += bw + 10;
+      });
+      ctx.restore();
+
+      // Bottom Bar
+      ctx.save();
+      const footerH = 76;
+      const footerY = H - footerH;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, footerY, W, footerH);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(0, footerY, W, 4);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.font = '800 15px Inter, sans-serif';
+      ctx.fillText('📱 FOLLOW UPDATES:', 40, footerY + 44);
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '700 15px Inter, sans-serif';
+      ctx.fillText(socialInput.value, 205, footerY + 44);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 14px Inter, sans-serif';
+      ctx.fillText('Official Portal: competition@winners-sports.org', W - 40, footerY + 44);
+      ctx.restore();
+    }
+
+    function drawPolygon(ctx, x, y, radius, sides, startAngle = 0) {
+      if (sides < 3) return;
+      ctx.beginPath();
+      const a = (Math.PI * 2) / sides;
+      for (let i = 0; i < sides; i++) {
+        const px = x + radius * Math.cos(startAngle + a * i);
+        const py = y + radius * Math.sin(startAngle + a * i);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      if (typeof radius === 'undefined') radius = 5;
+      if (typeof radius === 'number') {
+        radius = { tl: radius, tr: radius, br: radius, bl: radius };
+      } else {
+        const defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+        for (let side in defaultRadius) {
+          radius[side] = radius[side] || defaultRadius[side];
+        }
+      }
+      ctx.beginPath();
+      ctx.moveTo(x + radius.tl, y);
+      ctx.lineTo(x + width - radius.tr, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+      ctx.lineTo(x + width, y + height - radius.br);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+      ctx.lineTo(x + radius.bl, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+      ctx.lineTo(x, y + radius.tl);
+      ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+      ctx.closePath();
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      drawBanner();
+      const link = document.createElement('a');
+      link.download = 'wfc-social-banner-20th-nov.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', drawBanner);
+
+    [tournamentInput, headlineInput, subheadInput, dateInput, timeInput, venueInput, badgeInput, socialInput].forEach(inp => {
+      inp.addEventListener('input', drawBanner);
+    });
+
+    window.addEventListener('load', () => {
+      setTimeout(drawBanner, 200);
+    });
+  </script>
+</body>
+</html>
