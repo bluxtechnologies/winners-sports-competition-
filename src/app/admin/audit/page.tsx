@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { store } from "@/services/store";
 import { AuditLog } from "@/types";
-import { ShieldAlert, Search, Filter, Clock } from "lucide-react";
+import { Search } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 
 export default function AdminAuditPage() {
@@ -18,59 +18,59 @@ export default function AdminAuditPage() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+          <h1 className="text-xl font-bold text-foreground">
             System Activity Audit Trail
           </h1>
           <p className="text-xs text-muted-foreground">
-            Complete cryptographic audit trail of all administrative operations, payment approvals, score submissions, and card penalties
+            Audit trail of administrative operations, payment approvals, score submissions, and card penalties
           </p>
         </div>
 
         <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search action or details..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand-gold"
+            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
 
       {/* Logs Table */}
-      <div className="border border-white/10 rounded-2xl overflow-hidden bg-card/60">
+      <div className="rounded-[6px] border border-border bg-card overflow-hidden shadow-subtle">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-white/5 border-b border-white/10 text-muted-foreground uppercase font-bold text-[10px]">
+            <thead className="bg-muted/40 border-b border-border text-muted-foreground font-medium">
               <tr>
-                <th className="p-3.5">Timestamp</th>
-                <th className="p-3.5">Administrator</th>
-                <th className="p-3.5">Action</th>
-                <th className="p-3.5">Entity</th>
-                <th className="p-3.5">Details</th>
+                <th className="py-2.5 px-3">Timestamp</th>
+                <th className="py-2.5 px-3">Administrator</th>
+                <th className="py-2.5 px-3">Action</th>
+                <th className="py-2.5 px-3">Entity</th>
+                <th className="py-2.5 px-3">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border">
               {filtered.map((log) => (
-                <tr key={log.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="p-3.5 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
+                <tr key={log.id} className="hover:bg-muted/20">
+                  <td className="py-2.5 px-3 font-mono text-muted-foreground whitespace-nowrap text-[11px]">
                     {formatDateTime(log.createdAt)}
                   </td>
-                  <td className="p-3.5 font-bold text-white whitespace-nowrap">
+                  <td className="py-2.5 px-3 font-medium text-foreground whitespace-nowrap">
                     {log.adminName}
                   </td>
-                  <td className="p-3.5 font-mono font-bold text-brand-gold whitespace-nowrap">
+                  <td className="py-2.5 px-3 font-mono font-medium text-primary whitespace-nowrap">
                     {log.action}
                   </td>
-                  <td className="p-3.5 uppercase text-[10px] text-muted-foreground whitespace-nowrap">
+                  <td className="py-2.5 px-3 uppercase text-[10px] text-muted-foreground whitespace-nowrap">
                     {log.entityType} ({log.entityId.slice(0, 10)})
                   </td>
-                  <td className="p-3.5 text-white/90 leading-relaxed max-w-md">
+                  <td className="py-2.5 px-3 text-muted-foreground max-w-md">
                     {log.details}
                   </td>
                 </tr>

@@ -9,8 +9,7 @@ import {
   Lock, 
   Mail, 
   ArrowRight, 
-  UserCheck, 
-  Sparkles 
+  ArrowLeft
 } from "lucide-react";
 
 export default function AdminLoginPage() {
@@ -19,7 +18,6 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("••••••••");
 
   const handleRoleSelect = (roleName: string) => {
-    // In production this sets Supabase auth session; for local prototype it navigates immediately
     router.push("/admin/dashboard");
   };
 
@@ -29,95 +27,100 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-black via-slate-950 to-background">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+      <div className="w-full max-w-sm space-y-6">
         {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-gold text-black shadow-xl shadow-amber-500/20 mx-auto">
-            <Trophy className="h-6 w-6 stroke-[2.5]" />
+        <div className="text-center space-y-2">
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-[6px] bg-primary text-primary-foreground font-bold mx-auto">
+            <Trophy className="h-5 w-5" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-            WSC Committee Portal
+          <h1 className="text-xl font-bold text-foreground">
+            WSC Administration Portal
           </h1>
           <p className="text-xs text-muted-foreground">
-            Southern Delta University, Ozoro • Tournament Administration
+            Southern Delta University, Ozoro • Official Management Console
           </p>
         </div>
 
-        {/* 1-Click Fast Role Selector for Demo & Development */}
-        <div className="p-5 rounded-2xl border border-brand-gold/30 bg-amber-500/5 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase text-brand-gold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Fast Role Simulator (1-Click Login)</span>
+        {/* 1-Click Fast Role Simulator */}
+        <div className="p-4 rounded-[6px] border border-border bg-card space-y-2.5 shadow-subtle">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Role Simulator (1-Click Authentication)
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
+              type="button"
               onClick={() => handleRoleSelect("super_admin")}
-              className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-brand-gold hover:text-black font-semibold text-left transition-colors"
+              className="p-2 rounded-[6px] border border-border hover:bg-muted text-foreground font-medium text-left transition-colors"
             >
-              👑 Super Admin
+              Super Admin
             </button>
             <button
+              type="button"
               onClick={() => handleRoleSelect("finance_manager")}
-              className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-brand-gold hover:text-black font-semibold text-left transition-colors"
+              className="p-2 rounded-[6px] border border-border hover:bg-muted text-foreground font-medium text-left transition-colors"
             >
-              💰 Finance Officer
+              Finance Officer
             </button>
             <button
+              type="button"
               onClick={() => handleRoleSelect("football_manager")}
-              className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-brand-gold hover:text-black font-semibold text-left transition-colors"
+              className="p-2 rounded-[6px] border border-border hover:bg-muted text-foreground font-medium text-left transition-colors"
             >
-              ⚽ Football Manager
+              Football Manager
             </button>
             <button
+              type="button"
               onClick={() => handleRoleSelect("marathon_manager")}
-              className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-brand-gold hover:text-black font-semibold text-left transition-colors"
+              className="p-2 rounded-[6px] border border-border hover:bg-muted text-foreground font-medium text-left transition-colors"
             >
-              🏃 Marathon Manager
+              Marathon Manager
             </button>
           </div>
         </div>
 
-        {/* Traditional Credentials Form */}
-        <form onSubmit={handleSubmit} className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-4 text-xs">
-          <div className="space-y-1.5">
-            <label className="font-bold text-white flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>Admin Email</span>
+        {/* Credentials Form */}
+        <form onSubmit={handleSubmit} className="p-5 rounded-[6px] border border-border bg-card space-y-3.5 text-xs shadow-subtle">
+          <div className="space-y-1">
+            <label className="font-medium text-foreground block">
+              Admin Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-gold"
+              className="w-full px-2.5 py-1.5 rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="font-bold text-white flex items-center gap-1.5">
-              <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-              <span>Password</span>
+          <div className="space-y-1">
+            <label className="font-medium text-foreground block">
+              Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-gold"
+              className="w-full px-2.5 py-1.5 rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-gold to-amber-500 hover:from-amber-400 hover:to-amber-600 text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-[0.96] transition-all"
+            className="w-full py-2 rounded-[6px] bg-primary text-primary-foreground font-semibold text-xs hover:bg-primary/90 transition-colors flex items-center justify-center gap-1.5"
           >
-            <ShieldCheck className="w-4 h-4" />
-            <span>Sign In to Dashboard</span>
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Sign In to Console</span>
           </button>
         </form>
 
-        <div className="text-center text-xs">
-          <Link href="/" className="text-muted-foreground hover:text-white transition-colors">
-            ← Return to public website
+        <div className="text-center">
+          <Link
+            href="/"
+            className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Public Homepage</span>
           </Link>
         </div>
       </div>

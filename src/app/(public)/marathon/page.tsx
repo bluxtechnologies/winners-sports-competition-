@@ -6,13 +6,11 @@ import {
   Timer, 
   MapPin, 
   Calendar, 
-  ShieldCheck, 
   Heart, 
   Award, 
   CheckCircle2, 
   Search,
   Users,
-  Flame,
   ArrowRight
 } from "lucide-react";
 import { store } from "@/services/store";
@@ -33,275 +31,221 @@ export default function MarathonPage() {
   const filteredParticipants = participants.filter((p) =>
     p.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (p.bibNumber && p.bibNumber.includes(searchQuery)) ||
-    (p.matricNumber && p.matricNumber.toLowerCase().includes(searchQuery.toLowerCase()))
+    p.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="space-y-12 pb-20">
-      {/* Marathon Hero Banner */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 border-b border-white/10 bg-gradient-to-b from-emerald-950/20 via-black to-background">
-        <div className="container relative z-10 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-emerald/30 bg-emerald-500/10 text-brand-emerald text-xs font-bold uppercase tracking-wider">
-              <Timer className="w-3.5 h-3.5" />
+    <div className="space-y-10 pb-20">
+      {/* Marathon Header Banner */}
+      <section className="border-b border-border bg-background pt-10 pb-12">
+        <div className="container max-w-5xl space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[6px] border border-border bg-muted text-foreground text-xs font-medium">
+              <Timer className="w-3.5 h-3.5 text-primary" />
               <span>Campus Road Race • First Edition</span>
             </div>
-            <div className="text-xs text-muted-foreground font-medium">
-              Host: <span className="text-white font-semibold">{siteConfig.hostInstitution}</span>
+            <div className="text-xs text-muted-foreground">
+              Host: <span className="text-foreground font-medium">{siteConfig.hostInstitution}</span>
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="space-y-3 max-w-3xl">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-tight">
-                Winners Marathon <span className="text-brand-emerald">Challenge</span>
+            <div className="space-y-3 max-w-2xl">
+              <h1 className="text-2xl sm:text-4xl font-bold text-foreground tracking-tight">
+                Winners Marathon Challenge (WMC)
               </h1>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                Southern Delta University&apos;s campus road running competition. Compete in the timed 10K Campus Elite or join the 5K Campus Fun Run. Official numbered bibs, chip timing, and emergency safety checkpoints along the route.
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Southern Delta University campus road endurance competition. Timed 10K Campus Elite division and 5K Campus Fun Run. Official numbered bib credentials, checkpoint verification, and on-site emergency first aid.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/marathon/register"
-                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-emerald to-emerald-600 hover:from-emerald-400 hover:to-emerald-700 text-white font-extrabold text-sm shadow-xl shadow-emerald-500/20 active:scale-[0.96] transition-all"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs transition-colors"
               >
-                Register as Runner
+                <span>Register as Runner</span>
               </Link>
             </div>
           </div>
 
           {/* Key Marathon Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10">
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-              <div className="text-2xl font-mono font-extrabold text-white">10K & 5K</div>
-              <div className="text-xs text-muted-foreground">Race Categories</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-border">
+            <div className="p-3 rounded-[6px] border border-border bg-card">
+              <div className="text-lg font-bold font-mono text-foreground">10K & 5K</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Race Categories</div>
             </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-              <div className="text-2xl font-mono font-extrabold text-brand-emerald">₦50,000</div>
-              <div className="text-xs text-muted-foreground">10K Podium Cash Prizes</div>
+            <div className="p-3 rounded-[6px] border border-border bg-card">
+              <div className="text-lg font-bold font-mono text-primary">₦50,000</div>
+              <div className="text-xs text-muted-foreground mt-0.5">10K Podium Cash Prizes</div>
             </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-              <div className="text-2xl font-mono font-extrabold text-white">Every 2.5km</div>
-              <div className="text-xs text-muted-foreground">Water & Aid Stations</div>
+            <div className="p-3 rounded-[6px] border border-border bg-card">
+              <div className="text-lg font-bold font-mono text-foreground">Every 2.5km</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Water & Aid Checkpoints</div>
             </div>
-            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
-              <div className="text-2xl font-mono font-extrabold text-brand-gold">Dec 8, 2026</div>
-              <div className="text-xs text-muted-foreground">Official Race Day (6:30 AM)</div>
+            <div className="p-3 rounded-[6px] border border-border bg-card">
+              <div className="text-lg font-bold font-mono text-foreground">Dec 8, 2026</div>
+              <div className="text-xs text-muted-foreground mt-0.5">Official Race Day (6:30 AM)</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Tabs Navigation */}
-      <section className="container space-y-8">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-white/10">
+      <section className="container max-w-5xl space-y-6">
+        <div className="flex items-center gap-1 border-b border-border pb-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab("overview")}
             className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap",
+              "px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors whitespace-nowrap",
               activeTab === "overview"
-                ? "bg-brand-emerald text-white shadow-md shadow-emerald-500/20"
-                : "bg-white/5 text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
           >
-            <Timer className="w-4 h-4" />
-            <span>Race Divisions & Prizes</span>
+            Race Categories & Prizes
           </button>
-
           <button
             onClick={() => setActiveTab("results")}
             className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap",
+              "px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors whitespace-nowrap",
               activeTab === "results"
-                ? "bg-brand-emerald text-white shadow-md shadow-emerald-500/20"
-                : "bg-white/5 text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
           >
-            <Award className="w-4 h-4" />
-            <span>Live Results & Leaderboard</span>
+            Live Results Leaderboard
           </button>
-
           <button
             onClick={() => setActiveTab("runners")}
             className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap",
+              "px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors whitespace-nowrap",
               activeTab === "runners"
-                ? "bg-brand-emerald text-white shadow-md shadow-emerald-500/20"
-                : "bg-white/5 text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
           >
-            <Users className="w-4 h-4" />
-            <span>Registered Runners & Bibs ({participants.length})</span>
+            Registered Runners ({participants.length})
           </button>
-
           <button
             onClick={() => setActiveTab("route")}
             className={cn(
-              "px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap",
+              "px-3 py-1.5 rounded-[6px] text-xs font-medium transition-colors whitespace-nowrap",
               activeTab === "route"
-                ? "bg-brand-emerald text-white shadow-md shadow-emerald-500/20"
-                : "bg-white/5 text-muted-foreground hover:text-white"
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
             )}
           >
-            <MapPin className="w-4 h-4" />
-            <span>Campus Route & Safety</span>
+            Campus Route & Medical Safety
           </button>
         </div>
 
-        {/* TAB 1: OVERVIEW & PRIZES */}
+        {/* Tab 1: Overview */}
         {activeTab === "overview" && (
-          <div className="space-y-8 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* 10K Elite Card */}
-              <div className="athletic-card rounded-3xl p-8 space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                    Timed Championship Division
-                  </span>
-                  <span className="font-mono font-bold text-brand-gold text-sm">
-                    Fee: ₦3,000
-                  </span>
-                </div>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {raceCategories.map((category) => (
+                <div key={category.id} className="rounded-[6px] border border-border bg-card p-5 space-y-4 shadow-subtle">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xl font-bold text-foreground">
+                      {category.distanceKm}KM
+                    </span>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-[6px] bg-muted text-foreground border border-border">
+                      Fee: {formatNaira(category.fee)}
+                    </span>
+                  </div>
 
-                <div>
-                  <h3 className="text-2xl font-bold text-white">10K Campus Elite Challenge</h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    2 laps around Southern Delta University perimeter road. Official chip timing and cash podium prizes for student athletes.
-                  </p>
-                </div>
+                  <div>
+                    <h3 className="font-bold text-base text-foreground">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      {category.description}
+                    </p>
+                  </div>
 
-                <div className="space-y-3 pt-2">
-                  <div className="text-xs font-bold text-white uppercase tracking-wider">Cash Prizes:</div>
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <div className="text-amber-400 font-bold">1st Place</div>
-                      <div className="text-base font-mono font-extrabold text-white mt-0.5">₦30,000</div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <div className="text-slate-300 font-bold">2nd Place</div>
-                      <div className="text-base font-mono font-extrabold text-white mt-0.5">₦15,000</div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                      <div className="text-amber-600 font-bold">3rd Place</div>
-                      <div className="text-base font-mono font-extrabold text-white mt-0.5">₦5,000</div>
-                    </div>
+                  <div className="pt-2 border-t border-border flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Official Bib & Hydration</span>
+                    <Link
+                      href={`/marathon/register?category=${category.id}`}
+                      className="font-medium text-primary hover:underline"
+                    >
+                      Register for {category.distanceKm}K
+                    </Link>
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="pt-4 border-t border-white/10 flex justify-between items-center text-xs">
-                  <span className="text-muted-foreground">Gun time & Chip time recorded</span>
-                  <Link
-                    href="/marathon/register?category=10k"
-                    className="font-bold px-4 py-2 rounded-lg bg-brand-emerald text-white hover:bg-emerald-600 transition-colors"
-                  >
-                    Enter 10K Elite
-                  </Link>
+            {/* Podium Prizes */}
+            <div className="rounded-[6px] border border-border bg-card p-5 space-y-3 shadow-subtle">
+              <h3 className="text-sm font-semibold text-foreground">
+                10K Campus Elite Cash Prizes
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="p-3 rounded-[6px] bg-muted/40 border border-border">
+                  <div className="font-semibold text-foreground">1st Place Champion</div>
+                  <div className="text-base font-bold font-mono text-primary mt-1">₦30,000</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">Trophy & Gold Medal</div>
                 </div>
-              </div>
-
-              {/* 5K Fun Run Card */}
-              <div className="athletic-card rounded-3xl p-8 space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs uppercase font-extrabold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                    Community & Fitness
-                  </span>
-                  <span className="font-mono font-bold text-brand-emerald text-sm">
-                    Fee: ₦2,000
-                  </span>
+                <div className="p-3 rounded-[6px] bg-muted/40 border border-border">
+                  <div className="font-semibold text-foreground">2nd Place Runner-Up</div>
+                  <div className="text-base font-bold font-mono text-foreground mt-1">₦15,000</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">Silver Medal</div>
                 </div>
-
-                <div>
-                  <h3 className="text-2xl font-bold text-white">5K Campus Fun Run</h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    1 lap community course open to all students, staff, and fitness enthusiasts. Run, jog, or walk to celebrate campus health.
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <div className="text-xs font-bold text-white uppercase tracking-wider">Runner Benefits:</div>
-                  <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-5">
-                    <li>Official personalized bib number</li>
-                    <li>WMC Finisher certificate & post-race hydration</li>
-                    <li>Access to water stations every 2.5km</li>
-                    <li>Medical monitoring and first-aid support</li>
-                  </ul>
-                </div>
-
-                <div className="pt-4 border-t border-white/10 flex justify-between items-center text-xs">
-                  <span className="text-muted-foreground">Non-podium community division</span>
-                  <Link
-                    href="/marathon/register?category=5k"
-                    className="font-bold px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
-                  >
-                    Enter 5K Fun Run
-                  </Link>
+                <div className="p-3 rounded-[6px] bg-muted/40 border border-border">
+                  <div className="font-semibold text-foreground">3rd Place Podium</div>
+                  <div className="text-base font-bold font-mono text-foreground mt-1">₦5,000</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">Bronze Medal</div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* TAB 2: LIVE LEADERBOARD */}
+        {/* Tab 2: Results */}
         {activeTab === "results" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-border text-xs">
               <div>
-                <h3 className="text-xl font-bold text-white">10K Campus Elite Challenge Leaderboard</h3>
-                <p className="text-xs text-muted-foreground">Official electronic chip timing results and finishing positions</p>
+                <h3 className="font-semibold text-foreground text-sm">10K Campus Elite Leaderboard</h3>
+                <p className="text-muted-foreground">Official timing records</p>
               </div>
-              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                Official Results
-              </span>
             </div>
 
-            <div className="border border-white/10 rounded-2xl overflow-hidden bg-card/60">
+            <div className="rounded-[6px] border border-border bg-card overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-white/5 border-b border-white/10 text-muted-foreground uppercase font-bold text-[10px]">
+                <table className="w-full text-xs text-left">
+                  <thead className="bg-muted/40 border-b border-border text-muted-foreground font-medium">
                     <tr>
-                      <th className="p-3.5">Pos</th>
-                      <th className="p-3.5">Bib</th>
-                      <th className="p-3.5">Runner Name</th>
-                      <th className="p-3.5">Gun Time</th>
-                      <th className="p-3.5">Chip Time</th>
-                      <th className="p-3.5">Status</th>
-                      <th className="p-3.5">Notes</th>
+                      <th className="py-2.5 px-3">Pos</th>
+                      <th className="py-2.5 px-3">Bib #</th>
+                      <th className="py-2.5 px-3">Runner Name</th>
+                      <th className="py-2.5 px-3">Gun Time</th>
+                      <th className="py-2.5 px-3">Chip Time</th>
+                      <th className="py-2.5 px-3">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-border">
                     {results.map((res) => (
-                      <tr key={res.id} className="hover:bg-white/[0.02] transition-colors">
-                        <td className="p-3.5">
-                          <span className={cn(
-                            "w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono text-xs",
-                            res.finishingPosition === 1 ? "bg-amber-500 text-black shadow" :
-                            res.finishingPosition === 2 ? "bg-slate-300 text-black" :
-                            res.finishingPosition === 3 ? "bg-amber-700 text-white" :
-                            "bg-white/10 text-white"
-                          )}>
-                            {res.finishingPosition}
-                          </span>
+                      <tr key={res.id} className="hover:bg-muted/20">
+                        <td className="py-2 px-3 font-mono font-bold text-foreground">
+                          #{res.finishingPosition}
                         </td>
-                        <td className="p-3.5 font-mono font-bold text-brand-gold">
-                          #{res.bibNumber}
+                        <td className="py-2 px-3 font-mono font-semibold text-primary">
+                          {res.bibNumber}
                         </td>
-                        <td className="p-3.5 font-bold text-white">
+                        <td className="py-2 px-3 font-medium text-foreground">
                           {res.participantName}
                         </td>
-                        <td className="p-3.5 font-mono text-white/90">
+                        <td className="py-2 px-3 font-mono text-muted-foreground">
                           {formatDurationSeconds(res.gunTimeSeconds)}
                         </td>
-                        <td className="p-3.5 font-mono text-brand-emerald font-bold">
+                        <td className="py-2 px-3 font-mono font-medium text-foreground">
                           {formatDurationSeconds(res.chipTimeSeconds)}
                         </td>
-                        <td className="p-3.5">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            {res.status}
+                        <td className="py-2 px-3">
+                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                            Finished
                           </span>
-                        </td>
-                        <td className="p-3.5 text-muted-foreground text-[11px]">
-                          {res.notes || "-"}
                         </td>
                       </tr>
                     ))}
@@ -312,83 +256,83 @@ export default function MarathonPage() {
           </div>
         )}
 
-        {/* TAB 3: REGISTERED RUNNERS */}
+        {/* Tab 3: Runners Search & Roster */}
         {activeTab === "runners" && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-border">
               <div>
-                <h3 className="text-xl font-bold text-white">Registered Runners & Bib Assignments</h3>
-                <p className="text-xs text-muted-foreground">Search by runner name, bib number, or student matric</p>
+                <h3 className="font-semibold text-foreground text-sm">Registered Participants</h3>
+                <p className="text-xs text-muted-foreground">Search by runner name or bib number</p>
               </div>
 
-              <div className="relative w-full sm:w-64">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <div className="w-full sm:w-64 relative">
+                <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search bib # or name..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand-emerald"
+                  placeholder="Search name or bib..."
+                  className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredParticipants.map((p) => (
-                <div key={p.id} className="flex justify-center">
-                  <BibBadge participant={p} />
+                <div key={p.id} className="rounded-[6px] border border-border bg-card p-3.5 space-y-2 text-xs shadow-subtle">
+                  <div className="flex items-center justify-between border-b border-border pb-2">
+                    <span className="font-mono font-bold text-primary text-sm">
+                      BIB #{p.bibNumber || "---"}
+                    </span>
+                    <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-[6px] bg-muted text-muted-foreground border border-border">
+                      {p.raceCategoryId === "rc-10k" ? "10K Elite" : "5K Fun Run"}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-foreground text-xs">{p.fullName}</h4>
+                    <p className="text-[11px] text-muted-foreground">{p.email}</p>
+                  </div>
+
+                  <div className="pt-1 text-[11px] flex items-center justify-between text-muted-foreground">
+                    <span>T-Shirt: {p.tShirtSize}</span>
+                    <span className={cn(
+                      p.checkInStatus ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-muted-foreground"
+                    )}>
+                      {p.checkInStatus ? "Checked In" : "Pending Check-In"}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* TAB 4: ROUTE & SAFETY */}
+        {/* Tab 4: Route & Medical Safety */}
         {activeTab === "route" && (
-          <div className="max-w-4xl space-y-6 animate-fade-in text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-6">
-              <div className="space-y-2">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-brand-emerald" />
-                  <span>Campus Route, Hydration & Participant Safety</span>
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  The Winners Marathon Challenge operates with mandatory participant welfare precautions across the campus grounds.
-                </p>
-              </div>
+          <div className="space-y-4">
+            <div className="rounded-[6px] border border-border bg-card p-6 space-y-4 shadow-subtle text-xs">
+              <h3 className="text-sm font-semibold text-foreground">
+                SDU Campus Course Layout & Medical Safety Protocol
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                The marathon follows Southern Delta University's perimeter Ring Road, beginning and ending at the SDU Main Sports Complex.
+              </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] space-y-2">
-                  <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
-                    <Heart className="w-4 h-4 text-red-400" />
-                    <span>Emergency Response & First Aid</span>
-                  </h4>
-                  <p className="text-xs leading-relaxed">
-                    A dedicated medical first-aid post and university ambulance are stationed at the SDU Sports Center Pavilion. First-aiders are posted at every 2.5km hydration checkpoint.
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="p-3.5 rounded-[6px] bg-muted/30 border border-border space-y-1.5">
+                  <div className="font-semibold text-foreground">Course Supervision & Water Stations</div>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Hydration points and course marshals are stationed every 2.5 kilometers along the Ring Road. Bottled water, glucose, and electrolytes are available at each station.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] space-y-2">
-                  <h4 className="font-bold text-white text-sm flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-brand-emerald" />
-                    <span>Mandatory Emergency Contacts</span>
-                  </h4>
-                  <p className="text-xs leading-relaxed">
-                    Every participant must supply verified next-of-kin emergency contact details and disclose any existing respiratory or cardiovascular conditions before receiving their bib.
+                <div className="p-3.5 rounded-[6px] bg-muted/30 border border-border space-y-1.5">
+                  <div className="font-semibold text-foreground">Medical First Aid & Evacuation</div>
+                  <p className="text-muted-foreground leading-relaxed">
+                    SDU University Health Centre paramedic teams and mobile ambulance units will patrol the circuit continuously throughout race duration. Runners experiencing dizziness or distress must report to the nearest marshal immediately.
                   </p>
                 </div>
-              </div>
-
-              <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] space-y-2">
-                <h4 className="font-bold text-white text-sm">Course Route Specifications</h4>
-                <ul className="list-disc pl-5 space-y-1 text-xs">
-                  <li><strong>Start / Finish:</strong> SDU Sports Complex Main Pavilion</li>
-                  <li><strong>Surface:</strong> Paved university ring road, fully marshaled with traffic restricted</li>
-                  <li><strong>Checkpoint 1 (2.5 km):</strong> Faculty of Engineering Roundabout (Water & Electrolytes)</li>
-                  <li><strong>Checkpoint 2 (5.0 km):</strong> Main University Gate / 5K Fun Run Finish Line</li>
-                  <li><strong>Checkpoint 3 (7.5 km):</strong> Hostels Block B & C Loop (Water & Cold Sponges)</li>
-                  <li><strong>10K Finish:</strong> SDU Main Track Ring</li>
-                </ul>
               </div>
             </div>
           </div>

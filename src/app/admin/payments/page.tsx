@@ -8,14 +8,11 @@ import {
   CheckCircle2, 
   XCircle, 
   Search, 
-  Filter, 
   Download, 
-  FileText,
-  ShieldCheck,
+  Check,
   AlertCircle
 } from "lucide-react";
 import { formatNaira, formatDate, formatDateTime } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export default function AdminPaymentsPage() {
@@ -68,22 +65,22 @@ export default function AdminPaymentsPage() {
   const pendingTotal = payments.filter(p => p.status === "pending_verification").reduce((acc, p) => acc + p.amount, 0);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+          <h1 className="text-xl font-bold text-foreground">
             Payment Verification & Revenue Ledger
           </h1>
           <p className="text-xs text-muted-foreground">
-            Document 10 — Manual bank transfer verification, audit receipts, and financial ledger
+            Manual bank transfer verification, audit receipts, and financial ledger
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <div className="text-[10px] text-muted-foreground uppercase font-bold">Total Cleared</div>
-            <div className="font-mono text-xl font-extrabold text-brand-gold">
+            <div className="text-[10px] text-muted-foreground uppercase font-semibold">Total Cleared</div>
+            <div className="font-mono text-lg font-bold text-primary">
               {formatNaira(verifiedTotal)}
             </div>
           </div>
@@ -91,62 +88,41 @@ export default function AdminPaymentsPage() {
       </div>
 
       {notification && (
-        <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-brand-emerald" />
+        <div className="p-3 rounded-[6px] border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>{notification}</span>
         </div>
       )}
 
       {/* Financial Health Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-emerald-400 font-bold uppercase">
-            <span>Verified & Cleared</span>
-            <CheckCircle2 className="w-4 h-4" />
-          </div>
-          <div className="text-3xl font-mono font-extrabold text-white">
-            {formatNaira(verifiedTotal)}
-          </div>
-          <p className="text-[11px] text-muted-foreground">
-            Directly accounted into {siteConfig.bankDetails.bankName}
-          </p>
+        <div className="p-4 rounded-[6px] border border-border bg-card shadow-subtle space-y-1">
+          <div className="text-[11px] font-semibold text-muted-foreground uppercase">Verified Collections</div>
+          <div className="font-mono text-2xl font-bold text-foreground">{formatNaira(verifiedTotal)}</div>
+          <div className="text-[11px] text-muted-foreground">{payments.filter(p => p.status === "verified").length} transactions confirmed</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-amber-400 font-bold uppercase">
-            <span>Pending Verification</span>
-            <AlertCircle className="w-4 h-4" />
-          </div>
-          <div className="text-3xl font-mono font-extrabold text-white">
-            {formatNaira(pendingTotal)}
-          </div>
-          <p className="text-[11px] text-muted-foreground">
-            Submitted transfer references awaiting bank ledger check
-          </p>
+        <div className="p-4 rounded-[6px] border border-border bg-card shadow-subtle space-y-1">
+          <div className="text-[11px] font-semibold text-muted-foreground uppercase">Pending Audit</div>
+          <div className="font-mono text-2xl font-bold text-amber-600 dark:text-amber-400">{formatNaira(pendingTotal)}</div>
+          <div className="text-[11px] text-muted-foreground">{payments.filter(p => p.status === "pending_verification").length} awaiting bank matching</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-white/10 bg-white/[0.02] space-y-2">
-          <div className="flex items-center justify-between text-xs text-muted-foreground font-bold uppercase">
-            <span>Official Bank Account</span>
-            <CreditCard className="w-4 h-4" />
-          </div>
-          <div className="font-mono text-base font-bold text-white truncate">
-            {siteConfig.bankDetails.accountNumber}
-          </div>
-          <p className="text-[11px] text-muted-foreground">
-            {siteConfig.bankDetails.bankName} • {siteConfig.bankDetails.accountName}
-          </p>
+        <div className="p-4 rounded-[6px] border border-border bg-card shadow-subtle space-y-1">
+          <div className="text-[11px] font-semibold text-muted-foreground uppercase">Reconciliation Status</div>
+          <div className="font-mono text-2xl font-bold text-foreground">100%</div>
+          <div className="text-[11px] text-muted-foreground">All payments tracked with reference</div>
         </div>
       </div>
 
-      {/* Controls: Search & Filter Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-white/10 pb-4">
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+      {/* Filter & Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-1 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
           <button
             onClick={() => setStatusFilter("all")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap",
-              statusFilter === "all" ? "bg-white/20 text-white" : "bg-white/5 text-muted-foreground hover:text-white"
+              "px-3 py-1.5 rounded-[6px] font-medium transition-colors",
+              statusFilter === "all" ? "bg-primary text-primary-foreground font-semibold" : "border border-border text-foreground hover:bg-muted"
             )}
           >
             All ({payments.length})
@@ -154,118 +130,98 @@ export default function AdminPaymentsPage() {
           <button
             onClick={() => setStatusFilter("pending_verification")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5",
-              statusFilter === "pending_verification" ? "bg-amber-500 text-black" : "bg-white/5 text-muted-foreground hover:text-white"
+              "px-3 py-1.5 rounded-[6px] font-medium transition-colors",
+              statusFilter === "pending_verification" ? "bg-primary text-primary-foreground font-semibold" : "border border-border text-foreground hover:bg-muted"
             )}
           >
-            Pending Verification ({payments.filter(p => p.status === "pending_verification").length})
+            Pending ({payments.filter(p => p.status === "pending_verification").length})
           </button>
           <button
             onClick={() => setStatusFilter("verified")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5",
-              statusFilter === "verified" ? "bg-emerald-500 text-white" : "bg-white/5 text-muted-foreground hover:text-white"
+              "px-3 py-1.5 rounded-[6px] font-medium transition-colors",
+              statusFilter === "verified" ? "bg-primary text-primary-foreground font-semibold" : "border border-border text-foreground hover:bg-muted"
             )}
           >
             Verified ({payments.filter(p => p.status === "verified").length})
           </button>
-          <button
-            onClick={() => setStatusFilter("rejected")}
-            className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap",
-              statusFilter === "rejected" ? "bg-red-500 text-white" : "bg-white/5 text-muted-foreground hover:text-white"
-            )}
-          >
-            Rejected
-          </button>
         </div>
 
-        <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <div className="w-full sm:w-64 relative">
+          <Search className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search payer or reference..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand-gold"
+            className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
       </div>
 
       {/* Payments Table */}
-      <div className="border border-white/10 rounded-2xl overflow-hidden bg-card/60">
+      <div className="rounded-[6px] border border-border bg-card overflow-hidden shadow-subtle">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-white/5 border-b border-white/10 text-muted-foreground uppercase font-bold text-[10px]">
+            <thead className="bg-muted/40 border-b border-border text-muted-foreground font-medium">
               <tr>
-                <th className="p-3.5">Reference ID</th>
-                <th className="p-3.5">Payer Name</th>
-                <th className="p-3.5">Event</th>
-                <th className="p-3.5">Transfer Date</th>
-                <th className="p-3.5">Amount</th>
-                <th className="p-3.5">Status</th>
-                <th className="p-3.5">Verified By</th>
-                <th className="p-3.5 text-right">Actions</th>
+                <th className="py-2.5 px-3">Date</th>
+                <th className="py-2.5 px-3">Payer Name</th>
+                <th className="py-2.5 px-3">Amount</th>
+                <th className="py-2.5 px-3">Reference / Session ID</th>
+                <th className="py-2.5 px-3">Status</th>
+                <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
-              {filtered.map((p) => {
-                const isVerified = p.status === "verified";
-                const isPending = p.status === "pending_verification";
-
-                return (
-                  <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="p-3.5 font-mono font-bold text-brand-gold">
-                      {p.transferReference}
-                    </td>
-                    <td className="p-3.5 font-bold text-white">
-                      {p.payerName}
-                    </td>
-                    <td className="p-3.5 text-muted-foreground">
-                      {p.eventId === "e-football-001" ? "WFC Football (₦10k)" : "WMC Marathon"}
-                    </td>
-                    <td className="p-3.5 font-mono text-[11px] text-white/80">
-                      {p.transferDate}
-                    </td>
-                    <td className="p-3.5 font-mono font-bold text-white text-sm">
-                      {formatNaira(p.amount)}
-                    </td>
-                    <td className="p-3.5">
-                      <span className={cn(
-                        "px-2.5 py-0.5 rounded text-[10px] font-bold uppercase",
-                        isVerified ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-                        isPending ? "bg-amber-500/10 text-amber-300 border border-amber-500/20 animate-pulse" :
-                        "bg-red-500/10 text-red-400 border border-red-500/20"
-                      )}>
-                        {p.status.replace("_", " ")}
+            <tbody className="divide-y divide-border">
+              {filtered.map((p) => (
+                <tr key={p.id} className="hover:bg-muted/20">
+                  <td className="py-2.5 px-3 text-muted-foreground font-mono">
+                    {formatDate(p.transferDate)}
+                  </td>
+                  <td className="py-2.5 px-3 font-medium text-foreground">
+                    {p.payerName}
+                  </td>
+                  <td className="py-2.5 px-3 font-mono font-semibold text-foreground">
+                    {formatNaira(p.amount)}
+                  </td>
+                  <td className="py-2.5 px-3 font-mono text-muted-foreground text-[11px]">
+                    {p.transferReference}
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-[4px] text-[10px] font-semibold uppercase border",
+                      p.status === "verified" && "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+                      p.status === "pending_verification" && "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200 dark:border-amber-800",
+                      p.status === "rejected" && "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400 border-red-200 dark:border-red-800"
+                    )}>
+                      {p.status === "pending_verification" ? "Pending" : p.status}
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3 text-right">
+                    {p.status === "pending_verification" ? (
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleVerify(p.id)}
+                          className="px-2.5 py-1 rounded-[6px] bg-primary text-primary-foreground font-medium text-xs hover:bg-primary/90 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleReject(p.id)}
+                          className="px-2.5 py-1 rounded-[6px] border border-border text-foreground hover:bg-muted font-medium text-xs"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-[11px] text-muted-foreground">
+                        {p.verifiedByName || "Audited"}
                       </span>
-                    </td>
-                    <td className="p-3.5 text-[11px] text-muted-foreground">
-                      {p.verifiedByName || "-"}
-                    </td>
-                    <td className="p-3.5 text-right">
-                      {isPending ? (
-                        <div className="inline-flex items-center gap-1.5">
-                          <button
-                            onClick={() => handleVerify(p.id)}
-                            className="px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors"
-                          >
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleReject(p.id)}
-                            className="px-2.5 py-1 rounded-md bg-red-600/30 hover:bg-red-600 text-white font-bold text-[11px] transition-colors"
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-muted-foreground text-[11px]">Processed</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

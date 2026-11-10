@@ -7,11 +7,10 @@ import {
   CreditCard, 
   Users, 
   Calendar, 
-  ShieldAlert, 
   CheckCircle2, 
   ArrowRight, 
   Clock,
-  Sparkles,
+  ShieldCheck,
   AlertCircle
 } from "lucide-react";
 import { store } from "@/services/store";
@@ -25,6 +24,10 @@ export default function AdminDashboardPage() {
   const payments = store.getPayments();
   const auditLogs = store.getAuditLogs();
 
+  const footballEvent = store.getEventById("e-football-001");
+  const maxTeams = footballEvent?.maxTeams || 16;
+  const prizePool = footballEvent?.prizePoolTotal || 80000;
+
   const verifiedPayments = payments.filter((p) => p.status === "verified");
   const pendingPayments = payments.filter((p) => p.status === "pending_verification");
   const totalRevenue = verifiedPayments.reduce((acc, p) => acc + p.amount, 0);
@@ -34,12 +37,12 @@ export default function AdminDashboardPage() {
   const redCards = matches.flatMap((m) => m.events || []).filter((e) => e.eventType === "red_card");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-            Dashboard Overview
+          <h1 className="text-xl font-bold text-foreground">
+            Platform Overview
           </h1>
           <p className="text-xs text-muted-foreground">
             Southern Delta University, Ozoro • Winners Sports Competition Engine
@@ -49,16 +52,16 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/admin/payments"
-            className="px-3.5 py-2 rounded-xl bg-amber-500/10 text-brand-gold border border-brand-gold/30 text-xs font-bold hover:bg-amber-500/20 transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-[6px] border border-border bg-background hover:bg-muted text-foreground text-xs font-medium transition-colors flex items-center gap-1.5"
           >
-            <CreditCard className="w-3.5 h-3.5" />
-            <span>Verify Transfers ({pendingPayments.length})</span>
+            <CreditCard className="w-3.5 h-3.5 text-primary" />
+            <span>Verify Payments ({pendingPayments.length})</span>
           </Link>
           <Link
             href="/admin/football"
-            className="px-3.5 py-2 rounded-xl bg-brand-gold text-black font-extrabold text-xs shadow-md shadow-amber-500/20 hover:bg-amber-400 transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-[6px] bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors flex items-center gap-1.5"
           >
-            <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
+            <Trophy className="w-3.5 h-3.5" />
             <span>Manage Matches</span>
           </Link>
         </div>
@@ -67,178 +70,149 @@ export default function AdminDashboardPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Verified Income */}
-        <div className="athletic-card rounded-2xl p-5 space-y-3">
+        <div className="rounded-[6px] border border-border bg-card p-4 space-y-2 shadow-subtle">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-muted-foreground uppercase">Verified Revenue</span>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-brand-emerald">
-              <CreditCard className="w-4 h-4" />
-            </div>
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Verified Revenue</span>
+            <CreditCard className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <div className="text-3xl font-mono font-extrabold text-white">
+            <div className="text-2xl font-mono font-bold text-foreground">
               {formatNaira(totalRevenue)}
             </div>
-            <p className="text-[11px] text-emerald-400 font-semibold mt-1">
-              {verifiedPayments.length} transactions cleared
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {verifiedPayments.length} transactions audited
             </p>
           </div>
         </div>
 
         {/* Football Teams */}
-        <div className="athletic-card rounded-2xl p-5 space-y-3">
+        <div className="rounded-[6px] border border-border bg-card p-4 space-y-2 shadow-subtle">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-muted-foreground uppercase">WFC Football</span>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-brand-gold">
-              <Trophy className="w-4 h-4" />
-            </div>
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">WFC Teams</span>
+            <Trophy className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <div className="text-3xl font-mono font-extrabold text-white">
-              {teams.length} / 16
+            <div className="text-2xl font-mono font-bold text-foreground">
+              {teams.length} / {maxTeams}
             </div>
-            <p className="text-[11px] text-amber-300 font-semibold mt-1">
-              Full 16-team knockout capacity
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {footballEvent?.squadSize || 7}-player rosters active
             </p>
           </div>
         </div>
 
         {/* Marathon Runners */}
-        <div className="athletic-card rounded-2xl p-5 space-y-3">
+        <div className="rounded-[6px] border border-border bg-card p-4 space-y-2 shadow-subtle">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-muted-foreground uppercase">WMC Marathon</span>
-            <div className="p-2 rounded-lg bg-emerald-500/10 text-brand-emerald">
-              <Timer className="w-4 h-4" />
-            </div>
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">WMC Runners</span>
+            <Timer className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <div className="text-3xl font-mono font-extrabold text-white">
+            <div className="text-2xl font-mono font-bold text-foreground">
               {participants.length}
             </div>
-            <p className="text-[11px] text-muted-foreground font-semibold mt-1">
-              Runners registered across 10K & 5K
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              10K & 5K registered runners
             </p>
           </div>
         </div>
 
-        {/* Matches Completed */}
-        <div className="athletic-card rounded-2xl p-5 space-y-3">
+        {/* Matches Progress */}
+        <div className="rounded-[6px] border border-border bg-card p-4 space-y-2 shadow-subtle">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-muted-foreground uppercase">Matches Played</span>
-            <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-              <Calendar className="w-4 h-4" />
-            </div>
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Matches Concluded</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <div className="text-3xl font-mono font-extrabold text-white">
-              {completedMatches} / 16
+            <div className="text-2xl font-mono font-bold text-foreground">
+              {completedMatches} / {matches.length}
             </div>
-            <p className="text-[11px] text-purple-300 font-semibold mt-1">
-              Quarter & Semi-finals completed
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {yellowCards.length} Yellow • {redCards.length} Red cards
             </p>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Pending Action Alerts & Financial Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Quick Operations & Pending Items */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Quick Operations Matrix */}
-          <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-4">
-            <h3 className="font-extrabold text-base text-white">Quick Administrative Actions</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <Link
-                href="/admin/football"
-                className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-brand-gold/40 hover:bg-amber-500/5 space-y-2 transition-all block"
-              >
-                <Trophy className="w-5 h-5 text-brand-gold" />
-                <div className="font-bold text-white">Record Match</div>
-                <div className="text-[11px] text-muted-foreground">Scores & fines</div>
-              </Link>
-
-              <Link
-                href="/admin/payments"
-                className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-brand-gold/40 hover:bg-amber-500/5 space-y-2 transition-all block"
-              >
-                <CreditCard className="w-5 h-5 text-brand-emerald" />
-                <div className="font-bold text-white">Bank Transfers</div>
-                <div className="text-[11px] text-muted-foreground">Verify payments</div>
-              </Link>
-
-              <Link
-                href="/admin/marathon"
-                className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-brand-gold/40 hover:bg-amber-500/5 space-y-2 transition-all block"
-              >
-                <Timer className="w-5 h-5 text-purple-400" />
-                <div className="font-bold text-white">Runner Check-in</div>
-                <div className="text-[11px] text-muted-foreground">Bibs & timing</div>
-              </Link>
-
-              <Link
-                href="/admin/reports"
-                className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-brand-gold/40 hover:bg-amber-500/5 space-y-2 transition-all block"
-              >
-                <ShieldAlert className="w-5 h-5 text-red-400" />
-                <div className="font-bold text-white">Financial Closeout</div>
-                <div className="text-[11px] text-muted-foreground">Budget & ledger</div>
-              </Link>
-            </div>
+      {/* Two Column Layout: Quick Actions & Audit Trail */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Operational Status */}
+        <div className="lg:col-span-1 rounded-[6px] border border-border bg-card p-5 space-y-4 shadow-subtle text-xs">
+          <div className="font-semibold text-foreground text-sm border-b border-border pb-2.5">
+            Operational Highlights
           </div>
 
-          {/* Disciplinary Summary */}
-          <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-base text-white">Tournament Disciplinary Summary</h3>
-              <Link href="/admin/football" className="text-xs text-brand-gold hover:underline font-bold">
-                View in Football Console →
+          <div className="space-y-3">
+            <div className="p-3 rounded-[6px] bg-muted/30 border border-border space-y-1">
+              <div className="font-semibold text-foreground">Pending Payment Verifications</div>
+              <p className="text-muted-foreground text-[11px]">
+                {pendingPayments.length} bank transfers are awaiting finance desk confirmation.
+              </p>
+              <Link href="/admin/payments" className="text-primary hover:underline font-medium text-[11px] inline-block mt-1">
+                Review payment proofs &rarr;
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-1">
-                <span className="text-muted-foreground">Yellow Cards (₦1,000 fine)</span>
-                <div className="text-2xl font-mono font-bold text-amber-400">
-                  {yellowCards.length} Cards
-                </div>
-                <div className="text-[11px] text-muted-foreground">₦{yellowCards.length * 1000} assessed</div>
-              </div>
+            <div className="p-3 rounded-[6px] bg-muted/30 border border-border space-y-1">
+              <div className="font-semibold text-foreground">Dynamic Tournament Setup</div>
+              <p className="text-muted-foreground text-[11px]">
+                {maxTeams} Teams • {formatNaira(prizePool)} Pool • {footballEvent?.halfDurationMinutes || 20}m halves
+              </p>
+              <Link href="/admin/events" className="text-primary hover:underline font-medium text-[11px] inline-block mt-1">
+                Edit parameters &rarr;
+              </Link>
+            </div>
 
-              <div className="p-4 rounded-2xl border border-red-500/20 bg-red-500/5 space-y-1">
-                <span className="text-muted-foreground">Red Cards (₦3,000 fine + Ban)</span>
-                <div className="text-2xl font-mono font-bold text-red-400">
-                  {redCards.length} Cards
-                </div>
-                <div className="text-[11px] text-muted-foreground">₦{redCards.length * 3000} assessed</div>
-              </div>
+            <div className="p-3 rounded-[6px] bg-muted/30 border border-border space-y-1">
+              <div className="font-semibold text-foreground">Marathon Readiness</div>
+              <p className="text-muted-foreground text-[11px]">
+                Checkpoints, numbered bib allocation, and health centre emergency logistics.
+              </p>
+              <Link href="/admin/marathon" className="text-primary hover:underline font-medium text-[11px] inline-block mt-1">
+                Manage race check-in &rarr;
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Recent Audit Log */}
-        <div className="space-y-6">
-          <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-base text-white">Recent Audit Trail</h3>
-              <Link href="/admin/audit" className="text-xs text-brand-gold hover:underline font-semibold">
-                Full Log
-              </Link>
+        {/* Audit Logs Table */}
+        <div className="lg:col-span-2 rounded-[6px] border border-border bg-card p-5 space-y-3 shadow-subtle">
+          <div className="flex items-center justify-between border-b border-border pb-2.5">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Recent Audit Activity</h3>
+              <p className="text-[11px] text-muted-foreground">Immutable administrative actions & match events</p>
             </div>
+            <Link href="/admin/audit" className="text-xs text-primary hover:underline font-medium">
+              View all
+            </Link>
+          </div>
 
-            <div className="space-y-3 text-xs">
-              {auditLogs.slice(0, 5).map((log) => (
-                <div
-                  key={log.id}
-                  className="p-3 rounded-xl border border-white/5 bg-white/[0.02] space-y-1"
-                >
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                    <span className="font-bold text-brand-gold">{log.action}</span>
-                    <span>{formatDateTime(log.createdAt)}</span>
-                  </div>
-                  <p className="text-white text-xs leading-relaxed">{log.details}</p>
-                  <div className="text-[10px] text-muted-foreground">By: {log.adminName}</div>
-                </div>
-              ))}
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="text-[10px] uppercase font-semibold text-muted-foreground border-b border-border">
+                <tr>
+                  <th className="py-2 px-2">Time</th>
+                  <th className="py-2 px-2">Admin / Action</th>
+                  <th className="py-2 px-2">Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border text-[11px]">
+                {auditLogs.slice(0, 6).map((log) => (
+                  <tr key={log.id} className="hover:bg-muted/20">
+                    <td className="py-2 px-2 text-muted-foreground font-mono whitespace-nowrap">
+                      {formatDateTime(log.createdAt)}
+                    </td>
+                    <td className="py-2 px-2 whitespace-nowrap">
+                      <div className="font-medium text-foreground">{log.adminName}</div>
+                      <div className="text-[10px] text-primary font-mono">{log.action}</div>
+                    </td>
+                    <td className="py-2 px-2 text-muted-foreground max-w-xs truncate">
+                      {log.details}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

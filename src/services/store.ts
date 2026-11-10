@@ -9,11 +9,12 @@ import {
   Payment, 
   MediaAsset, 
   Announcement, 
-  AuditLog, 
-  EventRegistration 
+  AuditLog,
+  CaptainAccount,
+  TeamPlayer
 } from "@/types";
 
-// Seed Events
+// Seed Events with Dynamic Tournament Parameters
 export const seedEvents: WSCEvent[] = [
   {
     id: "e-football-001",
@@ -30,10 +31,21 @@ export const seedEvents: WSCEvent[] = [
     registrationDeadline: "2026-11-18T23:59:59Z",
     registrationFee: 10000,
     maxParticipants: 16,
+    
+    // Dynamic Tournament Parameters (Editable via Admin)
+    maxTeams: 16,
+    squadSize: 7,
+    playersOnPitch: 5,
     prizePoolTotal: 80000,
     prizeFirst: 50000,
     prizeSecond: 20000,
     prizeThird: 10000,
+    halfDurationMinutes: 20,
+    extraTimeMinutes: 5,
+    gracePeriodMinutes: 15,
+    yellowCardFine: 1000,
+    redCardFine: 3000,
+
     rulesSummary: "Monkey Post format with small goalposts. 7 registered players per team; 5 move freely on pitch; no fixed goalkeeper or post defender. 20 mins per half. 15-min walkover grace period. Yellow card fine ₦1,000; Red card fine ₦3,000 + 1 match suspension. Designated phone video review.",
     bannerUrl: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80",
     contactEmail: "football@winners-sports.org",
@@ -55,11 +67,21 @@ export const seedEvents: WSCEvent[] = [
     registrationDeadline: "2026-12-01T23:59:59Z",
     registrationFee: 3000,
     maxParticipants: 200,
+
+    maxTeams: 200,
+    squadSize: 1,
+    playersOnPitch: 1,
     prizePoolTotal: 50000,
     prizeFirst: 30000,
     prizeSecond: 15000,
     prizeThird: 5000,
-    rulesSummary: "Official bib number required. Water stations every 2.5km. Emergency medical staff on-site. Valid Southern Delta University matriculation ID required for student podium eligibility.",
+    halfDurationMinutes: 0,
+    extraTimeMinutes: 0,
+    gracePeriodMinutes: 15,
+    yellowCardFine: 0,
+    redCardFine: 0,
+
+    rulesSummary: "Official bib number required. Water stations every 2.5km. Emergency medical staff on-site. Valid Southern Delta University ID required for student podium eligibility.",
     bannerUrl: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1200&q=80",
     contactEmail: "marathon@winners-sports.org",
     contactPhone: "+234 803 765 4321",
@@ -67,7 +89,7 @@ export const seedEvents: WSCEvent[] = [
   },
 ];
 
-// Seed Teams (16 Teams for WFC)
+// Seed Teams (16 Teams for WFC with Invite Codes and without matric/department)
 export const seedTeams: Team[] = [
   {
     id: "team-01",
@@ -75,23 +97,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Engineering Dynamos",
     shortCode: "ENG",
-    departmentOrHall: "Faculty of Engineering",
     captainName: "Chinedu Okafor",
     captainEmail: "c.okafor@student.sdu.edu.ng",
     captainPhone: "08031112233",
-    captainMatric: "SDU/ENG/2022/1042",
+    inviteCode: "WFC-ENG-4912",
     seedNumber: 1,
     bracketPosition: 1,
     status: "confirmed",
     createdAt: "2026-11-01T10:00:00Z",
     players: [
-      { id: "p-01", fullName: "Chinedu Okafor", email: "c.okafor@student.sdu.edu.ng", phone: "08031112233", matricNumber: "SDU/ENG/2022/1042", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-02", fullName: "Emeka Nwosu", email: "e.nwosu@student.sdu.edu.ng", phone: "08031112234", matricNumber: "SDU/ENG/2022/1043", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-03", fullName: "Oviemo Akpan", email: "o.akpan@student.sdu.edu.ng", phone: "08031112235", matricNumber: "SDU/ENG/2023/1102", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-04", fullName: "Tariere Brisibe", email: "t.brisibe@student.sdu.edu.ng", phone: "08031112236", matricNumber: "SDU/ENG/2021/0954", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-05", fullName: "Kelvin Osagie", email: "k.osagie@student.sdu.edu.ng", phone: "08031112237", matricNumber: "SDU/ENG/2023/1201", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-06", fullName: "Blessing Idowu", email: "b.idowu@student.sdu.edu.ng", phone: "08031112238", matricNumber: "SDU/ENG/2022/1188", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-07", fullName: "Victor Efe", email: "v.efe@student.sdu.edu.ng", phone: "08031112239", matricNumber: "SDU/ENG/2024/1310", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-01", fullName: "Chinedu Okafor", email: "c.okafor@student.sdu.edu.ng", phone: "08031112233", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-02", fullName: "Emeka Nwosu", email: "e.nwosu@student.sdu.edu.ng", phone: "08031112234", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-03", fullName: "Oviemo Akpan", email: "o.akpan@student.sdu.edu.ng", phone: "08031112235", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-04", fullName: "Tariere Brisibe", email: "t.brisibe@student.sdu.edu.ng", phone: "08031112236", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-05", fullName: "Kelvin Osagie", email: "k.osagie@student.sdu.edu.ng", phone: "08031112237", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-06", fullName: "Blessing Idowu", email: "b.idowu@student.sdu.edu.ng", phone: "08031112238", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-07", fullName: "Victor Efe", email: "v.efe@student.sdu.edu.ng", phone: "08031112239", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -100,23 +121,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Ozoro City Ballers",
     shortCode: "OCB",
-    departmentOrHall: "Faculty of Management Science",
     captainName: "Eseosa Ighodaro",
     captainEmail: "e.ighodaro@student.sdu.edu.ng",
     captainPhone: "08032223344",
-    captainMatric: "SDU/MGT/2021/0812",
+    inviteCode: "WFC-OCB-8831",
     seedNumber: 2,
     bracketPosition: 2,
     status: "confirmed",
     createdAt: "2026-11-01T11:15:00Z",
     players: [
-      { id: "p-08", fullName: "Eseosa Ighodaro", email: "e.ighodaro@student.sdu.edu.ng", phone: "08032223344", matricNumber: "SDU/MGT/2021/0812", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-09", fullName: "Samuel Agbaje", email: "s.agbaje@student.sdu.edu.ng", phone: "08032223345", matricNumber: "SDU/MGT/2022/0944", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-10", fullName: "Collins Uche", email: "c.uche@student.sdu.edu.ng", phone: "08032223346", matricNumber: "SDU/MGT/2023/1021", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-11", fullName: "Princewill Onu", email: "p.onu@student.sdu.edu.ng", phone: "08032223347", matricNumber: "SDU/MGT/2021/0789", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-12", fullName: "Kevwe Omovie", email: "k.omovie@student.sdu.edu.ng", phone: "08032223348", matricNumber: "SDU/MGT/2023/1110", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-13", fullName: "Gideon Maduka", email: "g.maduka@student.sdu.edu.ng", phone: "08032223349", matricNumber: "SDU/MGT/2022/0991", jerseyNumber: 14, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-14", fullName: "Osasere Enabulele", email: "o.enabulele@student.sdu.edu.ng", phone: "08032223350", matricNumber: "SDU/MGT/2024/1255", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-08", fullName: "Eseosa Ighodaro", email: "e.ighodaro@student.sdu.edu.ng", phone: "08032223344", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-09", fullName: "Samuel Agbaje", email: "s.agbaje@student.sdu.edu.ng", phone: "08032223345", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-10", fullName: "Collins Uche", email: "c.uche@student.sdu.edu.ng", phone: "08032223346", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-11", fullName: "Princewill Onu", email: "p.onu@student.sdu.edu.ng", phone: "08032223347", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-12", fullName: "Kevwe Omovie", email: "k.omovie@student.sdu.edu.ng", phone: "08032223348", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-13", fullName: "Gideon Maduka", email: "g.maduka@student.sdu.edu.ng", phone: "08032223349", jerseyNumber: 14, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-14", fullName: "Osasere Enabulele", email: "o.enabulele@student.sdu.edu.ng", phone: "08032223350", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -125,23 +145,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Delta Falcons FC",
     shortCode: "DFF",
-    departmentOrHall: "Faculty of Science",
     captainName: "Precious Oghenekaro",
     captainEmail: "p.oghene@student.sdu.edu.ng",
     captainPhone: "08033334455",
-    captainMatric: "SDU/SCI/2022/0541",
+    inviteCode: "WFC-DFF-3310",
     seedNumber: 3,
     bracketPosition: 3,
     status: "confirmed",
     createdAt: "2026-11-01T12:00:00Z",
     players: [
-      { id: "p-15", fullName: "Precious Oghenekaro", email: "p.oghene@student.sdu.edu.ng", phone: "08033334455", matricNumber: "SDU/SCI/2022/0541", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-16", fullName: "Godstime Efetobor", email: "g.efetobor@student.sdu.edu.ng", phone: "08033334456", matricNumber: "SDU/SCI/2022/0542", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-17", fullName: "Harrison Efe", email: "h.efe@student.sdu.edu.ng", phone: "08033334457", matricNumber: "SDU/SCI/2023/0677", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-18", fullName: "Tega Omoraka", email: "t.omoraka@student.sdu.edu.ng", phone: "08033334458", matricNumber: "SDU/SCI/2021/0430", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-19", fullName: "Favour Momoh", email: "f.momoh@student.sdu.edu.ng", phone: "08033334459", matricNumber: "SDU/SCI/2023/0710", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-20", fullName: "David Ubogun", email: "d.ubogun@student.sdu.edu.ng", phone: "08033334460", matricNumber: "SDU/SCI/2022/0599", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-21", fullName: "Justice Edafe", email: "j.edafe@student.sdu.edu.ng", phone: "08033334461", matricNumber: "SDU/SCI/2024/0822", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-15", fullName: "Precious Oghenekaro", email: "p.oghene@student.sdu.edu.ng", phone: "08033334455", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-16", fullName: "Godstime Efetobor", email: "g.efetobor@student.sdu.edu.ng", phone: "08033334456", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-17", fullName: "Harrison Efe", email: "h.efe@student.sdu.edu.ng", phone: "08033334457", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-18", fullName: "Tega Omoraka", email: "t.omoraka@student.sdu.edu.ng", phone: "08033334458", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-19", fullName: "Favour Momoh", email: "f.momoh@student.sdu.edu.ng", phone: "08033334459", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-20", fullName: "David Ubogun", email: "d.ubogun@student.sdu.edu.ng", phone: "08033334460", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-21", fullName: "Justice Edafe", email: "j.edafe@student.sdu.edu.ng", phone: "08033334461", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -150,23 +169,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Campus Titans",
     shortCode: "CTT",
-    departmentOrHall: "Hostel B & C Block",
     captainName: "Daniel Okotete",
     captainEmail: "d.okotete@student.sdu.edu.ng",
     captainPhone: "08034445566",
-    captainMatric: "SDU/ENV/2022/0321",
+    inviteCode: "WFC-CTT-1944",
     seedNumber: 4,
     bracketPosition: 4,
     status: "confirmed",
     createdAt: "2026-11-01T13:30:00Z",
     players: [
-      { id: "p-22", fullName: "Daniel Okotete", email: "d.okotete@student.sdu.edu.ng", phone: "08034445566", matricNumber: "SDU/ENV/2022/0321", jerseyNumber: 8, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-23", fullName: "Marvellous Odjugo", email: "m.odjugo@student.sdu.edu.ng", phone: "08034445567", matricNumber: "SDU/ENV/2022/0322", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-24", fullName: "Igho Atumah", email: "i.atumah@student.sdu.edu.ng", phone: "08034445568", matricNumber: "SDU/ENV/2023/0401", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-25", fullName: "Ogagaoghene Ikpasa", email: "o.ikpasa@student.sdu.edu.ng", phone: "08034445569", matricNumber: "SDU/ENV/2021/0219", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-26", fullName: "Kevwe Okiemute", email: "k.okiemute@student.sdu.edu.ng", phone: "08034445570", matricNumber: "SDU/ENV/2023/0488", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-27", fullName: "Prosper Anigboro", email: "p.anigboro@student.sdu.edu.ng", phone: "08034445571", matricNumber: "SDU/ENV/2022/0355", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-28", fullName: "Ochuko Enarhire", email: "o.enarhire@student.sdu.edu.ng", phone: "08034445572", matricNumber: "SDU/ENV/2024/0590", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-22", fullName: "Daniel Okotete", email: "d.okotete@student.sdu.edu.ng", phone: "08034445566", jerseyNumber: 8, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-23", fullName: "Marvellous Odjugo", email: "m.odjugo@student.sdu.edu.ng", phone: "08034445567", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-24", fullName: "Igho Atumah", email: "i.atumah@student.sdu.edu.ng", phone: "08034445568", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-25", fullName: "Ogagaoghene Ikpasa", email: "o.ikpasa@student.sdu.edu.ng", phone: "08034445569", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-26", fullName: "Kevwe Okiemute", email: "k.okiemute@student.sdu.edu.ng", phone: "08034445570", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-27", fullName: "Prosper Anigboro", email: "p.anigboro@student.sdu.edu.ng", phone: "08034445571", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-28", fullName: "Ochuko Enarhire", email: "o.enarhire@student.sdu.edu.ng", phone: "08034445572", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -175,23 +193,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Agro All-Stars",
     shortCode: "AAS",
-    departmentOrHall: "Faculty of Agriculture",
     captainName: "Faithful Igbinosa",
     captainEmail: "f.igbinosa@student.sdu.edu.ng",
     captainPhone: "08035556677",
-    captainMatric: "SDU/AGR/2022/0111",
+    inviteCode: "WFC-AAS-5501",
     seedNumber: 5,
     bracketPosition: 5,
     status: "confirmed",
     createdAt: "2026-11-02T09:00:00Z",
     players: [
-      { id: "p-29", fullName: "Faithful Igbinosa", email: "f.igbinosa@student.sdu.edu.ng", phone: "08035556677", matricNumber: "SDU/AGR/2022/0111", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-30", fullName: "Paul Erhabor", email: "p.erhabor@student.sdu.edu.ng", phone: "08035556678", matricNumber: "SDU/AGR/2022/0112", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-31", fullName: "Jerry Osakwe", email: "j.osakwe@student.sdu.edu.ng", phone: "08035556679", matricNumber: "SDU/AGR/2023/0189", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-32", fullName: "Solomon Eguono", email: "s.eguono@student.sdu.edu.ng", phone: "08035556680", matricNumber: "SDU/AGR/2021/0088", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-33", fullName: "Moses Orhorhoro", email: "m.orhorhoro@student.sdu.edu.ng", phone: "08035556681", matricNumber: "SDU/AGR/2023/0210", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-34", fullName: "Peter Okandeji", email: "p.okandeji@student.sdu.edu.ng", phone: "08035556682", matricNumber: "SDU/AGR/2022/0144", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-35", fullName: "Austin Enakpodia", email: "a.enakpodia@student.sdu.edu.ng", phone: "08035556683", matricNumber: "SDU/AGR/2024/0299", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-29", fullName: "Faithful Igbinosa", email: "f.igbinosa@student.sdu.edu.ng", phone: "08035556677", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-30", fullName: "Paul Erhabor", email: "p.erhabor@student.sdu.edu.ng", phone: "08035556678", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-31", fullName: "Jerry Osakwe", email: "j.osakwe@student.sdu.edu.ng", phone: "08035556679", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-32", fullName: "Solomon Eguono", email: "s.eguono@student.sdu.edu.ng", phone: "08035556680", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-33", fullName: "Moses Orhorhoro", email: "m.orhorhoro@student.sdu.edu.ng", phone: "08035556681", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-34", fullName: "Peter Okandeji", email: "p.okandeji@student.sdu.edu.ng", phone: "08035556682", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-35", fullName: "Austin Enakpodia", email: "a.enakpodia@student.sdu.edu.ng", phone: "08035556683", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -200,23 +217,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Ozoro Spartans",
     shortCode: "OSP",
-    departmentOrHall: "Faculty of Social Sciences",
     captainName: "Ejiro Onome",
     captainEmail: "e.onome@student.sdu.edu.ng",
     captainPhone: "08036667788",
-    captainMatric: "SDU/SOC/2022/0661",
+    inviteCode: "WFC-OSP-7712",
     seedNumber: 6,
     bracketPosition: 6,
     status: "confirmed",
     createdAt: "2026-11-02T10:30:00Z",
     players: [
-      { id: "p-36", fullName: "Ejiro Onome", email: "e.onome@student.sdu.edu.ng", phone: "08036667788", matricNumber: "SDU/SOC/2022/0661", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-37", fullName: "Akpevwe Edewor", email: "a.edewor@student.sdu.edu.ng", phone: "08036667789", matricNumber: "SDU/SOC/2022/0662", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-38", fullName: "Stanley Uvwie", email: "s.uvwie@student.sdu.edu.ng", phone: "08036667790", matricNumber: "SDU/SOC/2023/0740", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-39", fullName: "Sunday Ogaga", email: "s.ogaga@student.sdu.edu.ng", phone: "08036667791", matricNumber: "SDU/SOC/2021/0590", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-40", fullName: "Efe Agbor", email: "e.agbor@student.sdu.edu.ng", phone: "08036667792", matricNumber: "SDU/SOC/2023/0795", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-41", fullName: "Clifford Ibru", email: "c.ibru@student.sdu.edu.ng", phone: "08036667793", matricNumber: "SDU/SOC/2022/0680", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-42", fullName: "Richard Obaro", email: "r.obaro@student.sdu.edu.ng", phone: "08036667794", matricNumber: "SDU/SOC/2024/0912", jerseyNumber: 14, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-36", fullName: "Ejiro Onome", email: "e.onome@student.sdu.edu.ng", phone: "08036667788", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-37", fullName: "Akpevwe Edewor", email: "a.edewor@student.sdu.edu.ng", phone: "08036667789", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-38", fullName: "Stanley Uvwie", email: "s.uvwie@student.sdu.edu.ng", phone: "08036667790", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-39", fullName: "Sunday Ogaga", email: "s.ogaga@student.sdu.edu.ng", phone: "08036667791", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-40", fullName: "Efe Agbor", email: "e.agbor@student.sdu.edu.ng", phone: "08036667792", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-41", fullName: "Clifford Ibru", email: "c.ibru@student.sdu.edu.ng", phone: "08036667793", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-42", fullName: "Richard Obaro", email: "r.obaro@student.sdu.edu.ng", phone: "08036667794", jerseyNumber: 14, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -225,23 +241,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Red Devils SDU",
     shortCode: "RDS",
-    departmentOrHall: "Computer Science Dept",
     captainName: "Osita Eze",
     captainEmail: "o.eze@student.sdu.edu.ng",
     captainPhone: "08037778899",
-    captainMatric: "SDU/CSC/2022/0201",
+    inviteCode: "WFC-RDS-4009",
     seedNumber: 7,
     bracketPosition: 7,
     status: "confirmed",
     createdAt: "2026-11-02T11:45:00Z",
     players: [
-      { id: "p-43", fullName: "Osita Eze", email: "o.eze@student.sdu.edu.ng", phone: "08037778899", matricNumber: "SDU/CSC/2022/0201", jerseyNumber: 11, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-44", fullName: "Chukwudi Obi", email: "c.obi@student.sdu.edu.ng", phone: "08037778900", matricNumber: "SDU/CSC/2022/0202", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-45", fullName: "Buchi Nnamdi", email: "b.nnamdi@student.sdu.edu.ng", phone: "08037778901", matricNumber: "SDU/CSC/2023/0288", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-46", fullName: "Tochukwu Kalu", email: "t.kalu@student.sdu.edu.ng", phone: "08037778902", matricNumber: "SDU/CSC/2021/0177", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-47", fullName: "Somtochukwu Ilodigwe", email: "s.ilodigwe@student.sdu.edu.ng", phone: "08037778903", matricNumber: "SDU/CSC/2023/0312", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-48", fullName: "Nonso Madueke", email: "n.madueke@student.sdu.edu.ng", phone: "08037778904", matricNumber: "SDU/CSC/2022/0244", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-49", fullName: "Ifeanyi Anyanwu", email: "i.anyanwu@student.sdu.edu.ng", phone: "08037778905", matricNumber: "SDU/CSC/2024/0390", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-43", fullName: "Osita Eze", email: "o.eze@student.sdu.edu.ng", phone: "08037778899", jerseyNumber: 11, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-44", fullName: "Chukwudi Obi", email: "c.obi@student.sdu.edu.ng", phone: "08037778900", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-45", fullName: "Buchi Nnamdi", email: "b.nnamdi@student.sdu.edu.ng", phone: "08037778901", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-46", fullName: "Tochukwu Kalu", email: "t.kalu@student.sdu.edu.ng", phone: "08037778902", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-47", fullName: "Somtochukwu Ilodigwe", email: "s.ilodigwe@student.sdu.edu.ng", phone: "08037778903", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-48", fullName: "Nonso Madueke", email: "n.madueke@student.sdu.edu.ng", phone: "08037778904", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-49", fullName: "Ifeanyi Anyanwu", email: "i.anyanwu@student.sdu.edu.ng", phone: "08037778905", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -250,23 +265,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Golden Strikers",
     shortCode: "GST",
-    departmentOrHall: "Faculty of Education",
     captainName: "Komeh Ediri",
     captainEmail: "k.ediri@student.sdu.edu.ng",
     captainPhone: "08038889900",
-    captainMatric: "SDU/EDU/2022/0411",
+    inviteCode: "WFC-GST-9122",
     seedNumber: 8,
     bracketPosition: 8,
     status: "confirmed",
     createdAt: "2026-11-02T13:00:00Z",
     players: [
-      { id: "p-50", fullName: "Komeh Ediri", email: "k.ediri@student.sdu.edu.ng", phone: "08038889900", matricNumber: "SDU/EDU/2022/0411", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-51", fullName: "Blessing Igbu", email: "b.igbu@student.sdu.edu.ng", phone: "08038889901", matricNumber: "SDU/EDU/2022/0412", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-52", fullName: "Oghenerukevwe Efe", email: "o.rukevwe@student.sdu.edu.ng", phone: "08038889902", matricNumber: "SDU/EDU/2023/0488", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-53", fullName: "Oghenetega Clark", email: "o.clark@student.sdu.edu.ng", phone: "08038889903", matricNumber: "SDU/EDU/2021/0355", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-54", fullName: "Onoriode Okoloko", email: "o.okoloko@student.sdu.edu.ng", phone: "08038889904", matricNumber: "SDU/EDU/2023/0521", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-55", fullName: "Mudiaga Oweh", email: "m.oweh@student.sdu.edu.ng", phone: "08038889905", matricNumber: "SDU/EDU/2022/0430", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-56", fullName: "Tosan Wilkie", email: "t.wilkie@student.sdu.edu.ng", phone: "08038889906", matricNumber: "SDU/EDU/2024/0599", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-50", fullName: "Komeh Ediri", email: "k.ediri@student.sdu.edu.ng", phone: "08038889900", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-51", fullName: "Blessing Igbu", email: "b.igbu@student.sdu.edu.ng", phone: "08038889901", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-52", fullName: "Oghenerukevwe Efe", email: "o.rukevwe@student.sdu.edu.ng", phone: "08038889902", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-53", fullName: "Oghenetega Clark", email: "o.clark@student.sdu.edu.ng", phone: "08038889903", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-54", fullName: "Onoriode Okoloko", email: "o.okoloko@student.sdu.edu.ng", phone: "08038889904", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-55", fullName: "Mudiaga Oweh", email: "m.oweh@student.sdu.edu.ng", phone: "08038889905", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-56", fullName: "Tosan Wilkie", email: "t.wilkie@student.sdu.edu.ng", phone: "08038889906", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -275,23 +289,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Phoenix Knights",
     shortCode: "PHK",
-    departmentOrHall: "Faculty of Law & Humanities",
     captainName: "Toluwani Adeyemi",
     captainEmail: "t.adeyemi@student.sdu.edu.ng",
     captainPhone: "08039990011",
-    captainMatric: "SDU/LAW/2022/0122",
+    inviteCode: "WFC-PHK-2201",
     seedNumber: 9,
     bracketPosition: 9,
     status: "confirmed",
     createdAt: "2026-11-03T09:30:00Z",
     players: [
-      { id: "p-57", fullName: "Toluwani Adeyemi", email: "t.adeyemi@student.sdu.edu.ng", phone: "08039990011", matricNumber: "SDU/LAW/2022/0122", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-58", fullName: "Femi Falana", email: "f.falana@student.sdu.edu.ng", phone: "08039990012", matricNumber: "SDU/LAW/2022/0123", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-59", fullName: "Kunle Ajayi", email: "k.ajayi@student.sdu.edu.ng", phone: "08039990013", matricNumber: "SDU/LAW/2023/0201", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-60", fullName: "Damilola Ojo", email: "d.ojo@student.sdu.edu.ng", phone: "08039990014", matricNumber: "SDU/LAW/2021/0099", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-61", fullName: "Seyi Makinde", email: "s.makinde@student.sdu.edu.ng", phone: "08039990015", matricNumber: "SDU/LAW/2023/0233", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-62", fullName: "Bayo Olatunji", email: "b.olatunji@student.sdu.edu.ng", phone: "08039990016", matricNumber: "SDU/LAW/2022/0150", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-63", fullName: "Segun Popoola", email: "s.popoola@student.sdu.edu.ng", phone: "08039990017", matricNumber: "SDU/LAW/2024/0290", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-57", fullName: "Toluwani Adeyemi", email: "t.adeyemi@student.sdu.edu.ng", phone: "08039990011", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-58", fullName: "Femi Falana", email: "f.falana@student.sdu.edu.ng", phone: "08039990012", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-59", fullName: "Kunle Ajayi", email: "k.ajayi@student.sdu.edu.ng", phone: "08039990013", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-60", fullName: "Damilola Ojo", email: "d.ojo@student.sdu.edu.ng", phone: "08039990014", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-61", fullName: "Seyi Makinde", email: "s.makinde@student.sdu.edu.ng", phone: "08039990015", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-62", fullName: "Bayo Olatunji", email: "b.olatunji@student.sdu.edu.ng", phone: "08039990016", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-63", fullName: "Segun Popoola", email: "s.popoola@student.sdu.edu.ng", phone: "08039990017", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -300,23 +313,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Thunderbolts United",
     shortCode: "TBU",
-    departmentOrHall: "Electrical Engineering",
     captainName: "Eromosele Akhere",
     captainEmail: "e.akhere@student.sdu.edu.ng",
     captainPhone: "08030001122",
-    captainMatric: "SDU/EEE/2022/0304",
+    inviteCode: "WFC-TBU-6641",
     seedNumber: 10,
     bracketPosition: 10,
     status: "confirmed",
     createdAt: "2026-11-03T11:00:00Z",
     players: [
-      { id: "p-64", fullName: "Eromosele Akhere", email: "e.akhere@student.sdu.edu.ng", phone: "08030001122", matricNumber: "SDU/EEE/2022/0304", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-65", fullName: "Osaro Igbinedion", email: "o.igbinedion@student.sdu.edu.ng", phone: "08030001123", matricNumber: "SDU/EEE/2022/0305", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-66", fullName: "Idahosa Omoigui", email: "i.omoigui@student.sdu.edu.ng", phone: "08030001124", matricNumber: "SDU/EEE/2023/0399", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-67", fullName: "Uyi Aghahowa", email: "u.aghahowa@student.sdu.edu.ng", phone: "08030001125", matricNumber: "SDU/EEE/2021/0244", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-68", fullName: "Nosakhare Idehen", email: "n.idehen@student.sdu.edu.ng", phone: "08030001126", matricNumber: "SDU/EEE/2023/0440", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-69", fullName: "Efe Omoregie", email: "e.omoregie@student.sdu.edu.ng", phone: "08030001127", matricNumber: "SDU/EEE/2022/0329", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-70", fullName: "Efosa Akenzua", email: "e.akenzua@student.sdu.edu.ng", phone: "08030001128", matricNumber: "SDU/EEE/2024/0512", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-64", fullName: "Eromosele Akhere", email: "e.akhere@student.sdu.edu.ng", phone: "08030001122", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-65", fullName: "Osaro Igbinedion", email: "o.igbinedion@student.sdu.edu.ng", phone: "08030001123", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-66", fullName: "Idahosa Omoigui", email: "i.omoigui@student.sdu.edu.ng", phone: "08030001124", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-67", fullName: "Uyi Aghahowa", email: "u.aghahowa@student.sdu.edu.ng", phone: "08030001125", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-68", fullName: "Nosakhare Idehen", email: "n.idehen@student.sdu.edu.ng", phone: "08030001126", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-69", fullName: "Efe Omoregie", email: "e.omoregie@student.sdu.edu.ng", phone: "08030001127", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-70", fullName: "Efosa Akenzua", email: "e.akenzua@student.sdu.edu.ng", phone: "08030001128", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -325,23 +337,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Ozoro All-Stars",
     shortCode: "OAS",
-    departmentOrHall: "Mass Communication",
     captainName: "Tarila Ebikeme",
     captainEmail: "t.ebikeme@student.sdu.edu.ng",
     captainPhone: "08031234567",
-    captainMatric: "SDU/MAC/2022/0155",
+    inviteCode: "WFC-OAS-1189",
     seedNumber: 11,
     bracketPosition: 11,
     status: "confirmed",
     createdAt: "2026-11-03T14:15:00Z",
     players: [
-      { id: "p-71", fullName: "Tarila Ebikeme", email: "t.ebikeme@student.sdu.edu.ng", phone: "08031234567", matricNumber: "SDU/MAC/2022/0155", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-72", fullName: "Ebipade Doubra", email: "e.doubra@student.sdu.edu.ng", phone: "08031234568", matricNumber: "SDU/MAC/2022/0156", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-73", fullName: "Preye Timipre", email: "p.timipre@student.sdu.edu.ng", phone: "08031234569", matricNumber: "SDU/MAC/2023/0244", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-74", fullName: "Ebiere Alabrah", email: "e.alabrah@student.sdu.edu.ng", phone: "08031234570", matricNumber: "SDU/MAC/2021/0109", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-75", fullName: "Perewari Dorgu", email: "p.dorgu@student.sdu.edu.ng", phone: "08031234571", matricNumber: "SDU/MAC/2023/0270", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-76", fullName: "Tombra Ogidi", email: "t.ogidi@student.sdu.edu.ng", phone: "08031234572", matricNumber: "SDU/MAC/2022/0178", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-77", fullName: "Kurotimi George", email: "k.george@student.sdu.edu.ng", phone: "08031234573", matricNumber: "SDU/MAC/2024/0350", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-71", fullName: "Tarila Ebikeme", email: "t.ebikeme@student.sdu.edu.ng", phone: "08031234567", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-72", fullName: "Ebipade Doubra", email: "e.doubra@student.sdu.edu.ng", phone: "08031234568", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-73", fullName: "Preye Timipre", email: "p.timipre@student.sdu.edu.ng", phone: "08031234569", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-74", fullName: "Ebiere Alabrah", email: "e.alabrah@student.sdu.edu.ng", phone: "08031234570", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-75", fullName: "Perewari Dorgu", email: "p.dorgu@student.sdu.edu.ng", phone: "08031234571", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-76", fullName: "Tombra Ogidi", email: "t.ogidi@student.sdu.edu.ng", phone: "08031234572", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-77", fullName: "Kurotimi George", email: "k.george@student.sdu.edu.ng", phone: "08031234573", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -350,23 +361,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "SDU Invincibles",
     shortCode: "SDI",
-    departmentOrHall: "Accounting & Finance",
     captainName: "Ubong Bassey",
     captainEmail: "u.bassey@student.sdu.edu.ng",
     captainPhone: "08032345678",
-    captainMatric: "SDU/ACC/2022/0331",
+    inviteCode: "WFC-SDI-5012",
     seedNumber: 12,
     bracketPosition: 12,
     status: "confirmed",
     createdAt: "2026-11-04T09:00:00Z",
     players: [
-      { id: "p-78", fullName: "Ubong Bassey", email: "u.bassey@student.sdu.edu.ng", phone: "08032345678", matricNumber: "SDU/ACC/2022/0331", jerseyNumber: 8, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-79", fullName: "Etido Essien", email: "e.essien@student.sdu.edu.ng", phone: "08032345679", matricNumber: "SDU/ACC/2022/0332", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-80", fullName: "Aniefiok Udoh", email: "a.udoh@student.sdu.edu.ng", phone: "08032345680", matricNumber: "SDU/ACC/2023/0411", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-81", fullName: "Inemesit Akpan", email: "i.akpan@student.sdu.edu.ng", phone: "08032345681", matricNumber: "SDU/ACC/2021/0255", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-82", fullName: "Kufre Archibong", email: "k.archibong@student.sdu.edu.ng", phone: "08032345682", matricNumber: "SDU/ACC/2023/0465", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-83", fullName: "Edidiong Asuquo", email: "e.asuquo@student.sdu.edu.ng", phone: "08032345683", matricNumber: "SDU/ACC/2022/0360", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-84", fullName: "Nsikan Ekong", email: "n.ekong@student.sdu.edu.ng", phone: "08032345684", matricNumber: "SDU/ACC/2024/0520", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-78", fullName: "Ubong Bassey", email: "u.bassey@student.sdu.edu.ng", phone: "08032345678", jerseyNumber: 8, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-79", fullName: "Etido Essien", email: "e.essien@student.sdu.edu.ng", phone: "08032345679", jerseyNumber: 11, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-80", fullName: "Aniefiok Udoh", email: "a.udoh@student.sdu.edu.ng", phone: "08032345680", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-81", fullName: "Inemesit Akpan", email: "i.akpan@student.sdu.edu.ng", phone: "08032345681", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-82", fullName: "Kufre Archibong", email: "k.archibong@student.sdu.edu.ng", phone: "08032345682", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-83", fullName: "Edidiong Asuquo", email: "e.asuquo@student.sdu.edu.ng", phone: "08032345683", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-84", fullName: "Nsikan Ekong", email: "n.ekong@student.sdu.edu.ng", phone: "08032345684", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -375,23 +385,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Redeemed Warriors",
     shortCode: "RDW",
-    departmentOrHall: "Christian Fellowship Hall",
     captainName: "Ezekiel Agbonlahor",
     captainEmail: "e.agbonlahor@student.sdu.edu.ng",
     captainPhone: "08033456789",
-    captainMatric: "SDU/BIO/2022/0088",
+    inviteCode: "WFC-RDW-7890",
     seedNumber: 13,
     bracketPosition: 13,
     status: "confirmed",
     createdAt: "2026-11-04T11:20:00Z",
     players: [
-      { id: "p-85", fullName: "Ezekiel Agbonlahor", email: "e.agbonlahor@student.sdu.edu.ng", phone: "08033456789", matricNumber: "SDU/BIO/2022/0088", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-86", fullName: "Joshua Osemwegie", email: "j.osemwegie@student.sdu.edu.ng", phone: "08033456790", matricNumber: "SDU/BIO/2022/0089", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-87", fullName: "Caleb Igbinedion", email: "c.igbinedion@student.sdu.edu.ng", phone: "08033456791", matricNumber: "SDU/BIO/2023/0144", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-88", fullName: "Gideon Ehigiator", email: "g.ehigiator@student.sdu.edu.ng", phone: "08033456792", matricNumber: "SDU/BIO/2021/0060", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-89", fullName: "Timothy Osahon", email: "t.osahon@student.sdu.edu.ng", phone: "08033456793", matricNumber: "SDU/BIO/2023/0180", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-90", fullName: "David Izekor", email: "d.izekor@student.sdu.edu.ng", phone: "08033456794", matricNumber: "SDU/BIO/2022/0105", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-91", fullName: "Nathaniel Osaze", email: "n.osaze@student.sdu.edu.ng", phone: "08033456795", matricNumber: "SDU/BIO/2024/0220", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-85", fullName: "Ezekiel Agbonlahor", email: "e.agbonlahor@student.sdu.edu.ng", phone: "08033456789", jerseyNumber: 7, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-86", fullName: "Joshua Osemwegie", email: "j.osemwegie@student.sdu.edu.ng", phone: "08033456790", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-87", fullName: "Caleb Igbinedion", email: "c.igbinedion@student.sdu.edu.ng", phone: "08033456791", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-88", fullName: "Gideon Ehigiator", email: "g.ehigiator@student.sdu.edu.ng", phone: "08033456792", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-89", fullName: "Timothy Osahon", email: "t.osahon@student.sdu.edu.ng", phone: "08033456793", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-90", fullName: "David Izekor", email: "d.izekor@student.sdu.edu.ng", phone: "08033456794", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-91", fullName: "Nathaniel Osaze", email: "n.osaze@student.sdu.edu.ng", phone: "08033456795", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -400,23 +409,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Kings of Monkey Post",
     shortCode: "KMP",
-    departmentOrHall: "Hostel D Block",
     captainName: "Oghenero Ovwigho",
     captainEmail: "o.ovwigho@student.sdu.edu.ng",
     captainPhone: "08034567890",
-    captainMatric: "SDU/ENG/2022/1090",
+    inviteCode: "WFC-KMP-4455",
     seedNumber: 14,
     bracketPosition: 14,
     status: "confirmed",
     createdAt: "2026-11-04T13:40:00Z",
     players: [
-      { id: "p-92", fullName: "Oghenero Ovwigho", email: "o.ovwigho@student.sdu.edu.ng", phone: "08034567890", matricNumber: "SDU/ENG/2022/1090", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-93", fullName: "Ochuko Arigbe", email: "o.arigbe@student.sdu.edu.ng", phone: "08034567891", matricNumber: "SDU/ENG/2022/1091", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-94", fullName: "Mudiaga Omote", email: "m.omote@student.sdu.edu.ng", phone: "08034567892", matricNumber: "SDU/ENG/2023/1188", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-95", fullName: "Efevwere Onoriode", email: "e.onoriode@student.sdu.edu.ng", phone: "08034567893", matricNumber: "SDU/ENG/2021/0990", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-96", fullName: "Godspower Ojarikre", email: "g.ojarikre@student.sdu.edu.ng", phone: "08034567894", matricNumber: "SDU/ENG/2023/1244", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-97", fullName: "Tega Onokpise", email: "t.onokpise@student.sdu.edu.ng", phone: "08034567895", matricNumber: "SDU/ENG/2022/1120", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-98", fullName: "Onome Erharhaghen", email: "o.erharhaghen@student.sdu.edu.ng", phone: "08034567896", matricNumber: "SDU/ENG/2024/1399", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-92", fullName: "Oghenero Ovwigho", email: "o.ovwigho@student.sdu.edu.ng", phone: "08034567890", jerseyNumber: 10, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-93", fullName: "Ochuko Arigbe", email: "o.arigbe@student.sdu.edu.ng", phone: "08034567891", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-94", fullName: "Mudiaga Omote", email: "m.omote@student.sdu.edu.ng", phone: "08034567892", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-95", fullName: "Efevwere Onoriode", email: "e.onoriode@student.sdu.edu.ng", phone: "08034567893", jerseyNumber: 9, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-96", fullName: "Godspower Ojarikre", email: "g.ojarikre@student.sdu.edu.ng", phone: "08034567894", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-97", fullName: "Tega Onokpise", email: "t.onokpise@student.sdu.edu.ng", phone: "08034567895", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-98", fullName: "Onome Erharhaghen", email: "o.erharhaghen@student.sdu.edu.ng", phone: "08034567896", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -425,23 +433,22 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Southern Stars",
     shortCode: "SST",
-    departmentOrHall: "Vocational & Technical Education",
     captainName: "Ebiakpo Tamara",
     captainEmail: "e.tamara@student.sdu.edu.ng",
     captainPhone: "08035678901",
-    captainMatric: "SDU/VTE/2022/0199",
+    inviteCode: "WFC-SST-3381",
     seedNumber: 15,
     bracketPosition: 15,
     status: "confirmed",
     createdAt: "2026-11-04T15:00:00Z",
     players: [
-      { id: "p-99", fullName: "Ebiakpo Tamara", email: "e.tamara@student.sdu.edu.ng", phone: "08035678901", matricNumber: "SDU/VTE/2022/0199", jerseyNumber: 11, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-100", fullName: "Preye Okardi", email: "p.okardi@student.sdu.edu.ng", phone: "08035678902", matricNumber: "SDU/VTE/2022/0200", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-101", fullName: "Timiebi Ken", email: "t.ken@student.sdu.edu.ng", phone: "08035678903", matricNumber: "SDU/VTE/2023/0288", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-102", fullName: "Diepreye Alagoa", email: "d.alagoa@student.sdu.edu.ng", phone: "08035678904", matricNumber: "SDU/VTE/2021/0144", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-103", fullName: "Boma Amangala", email: "b.amangala@student.sdu.edu.ng", phone: "08035678905", matricNumber: "SDU/VTE/2023/0315", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-104", fullName: "Tari Wodu", email: "t.wodu@student.sdu.edu.ng", phone: "08035678906", matricNumber: "SDU/VTE/2022/0212", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-105", fullName: "Woyengikuro Fente", email: "w.fente@student.sdu.edu.ng", phone: "08035678907", matricNumber: "SDU/VTE/2024/0400", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-99", fullName: "Ebiakpo Tamara", email: "e.tamara@student.sdu.edu.ng", phone: "08035678901", jerseyNumber: 11, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-100", fullName: "Preye Okardi", email: "p.okardi@student.sdu.edu.ng", phone: "08035678902", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-101", fullName: "Timiebi Ken", email: "t.ken@student.sdu.edu.ng", phone: "08035678903", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-102", fullName: "Diepreye Alagoa", email: "d.alagoa@student.sdu.edu.ng", phone: "08035678904", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-103", fullName: "Boma Amangala", email: "b.amangala@student.sdu.edu.ng", phone: "08035678905", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-104", fullName: "Tari Wodu", email: "t.wodu@student.sdu.edu.ng", phone: "08035678906", jerseyNumber: 3, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-105", fullName: "Woyengikuro Fente", email: "w.fente@student.sdu.edu.ng", phone: "08035678907", jerseyNumber: 6, isCaptain: false, verificationStatus: "verified" },
     ],
   },
   {
@@ -450,28 +457,27 @@ export const seedTeams: Team[] = [
     eventId: "e-football-001",
     name: "Ozoro Lions FC",
     shortCode: "OLC",
-    departmentOrHall: "Mechanical Engineering",
     captainName: "Uchechukwu Okeke",
     captainEmail: "u.okeke@student.sdu.edu.ng",
     captainPhone: "08036789012",
-    captainMatric: "SDU/MCE/2022/0510",
+    inviteCode: "WFC-OLC-9021",
     seedNumber: 16,
     bracketPosition: 16,
     status: "confirmed",
     createdAt: "2026-11-04T16:30:00Z",
     players: [
-      { id: "p-106", fullName: "Uchechukwu Okeke", email: "u.okeke@student.sdu.edu.ng", phone: "08036789012", matricNumber: "SDU/MCE/2022/0510", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
-      { id: "p-107", fullName: "Somadina Eze", email: "s.eze@student.sdu.edu.ng", phone: "08036789013", matricNumber: "SDU/MCE/2022/0511", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-108", fullName: "Chukwuma Anozie", email: "c.anozie@student.sdu.edu.ng", phone: "08036789014", matricNumber: "SDU/MCE/2023/0602", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-109", fullName: "Ebuka Nwabueze", email: "e.nwabueze@student.sdu.edu.ng", phone: "08036789015", matricNumber: "SDU/MCE/2021/0433", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-110", fullName: "Kenechukwu Mbah", email: "k.mbah@student.sdu.edu.ng", phone: "08036789016", matricNumber: "SDU/MCE/2023/0650", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-111", fullName: "Chimaobi Nduka", email: "c.nduka@student.sdu.edu.ng", phone: "08036789017", matricNumber: "SDU/MCE/2022/0540", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
-      { id: "p-112", fullName: "Obinna Opara", email: "o.opara@student.sdu.edu.ng", phone: "08036789018", matricNumber: "SDU/MCE/2024/0710", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-106", fullName: "Uchechukwu Okeke", email: "u.okeke@student.sdu.edu.ng", phone: "08036789012", jerseyNumber: 9, isCaptain: true, verificationStatus: "verified" },
+      { id: "p-107", fullName: "Somadina Eze", email: "s.eze@student.sdu.edu.ng", phone: "08036789013", jerseyNumber: 7, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-108", fullName: "Chukwuma Anozie", email: "c.anozie@student.sdu.edu.ng", phone: "08036789014", jerseyNumber: 10, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-109", fullName: "Ebuka Nwabueze", email: "e.nwabueze@student.sdu.edu.ng", phone: "08036789015", jerseyNumber: 4, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-110", fullName: "Kenechukwu Mbah", email: "k.mbah@student.sdu.edu.ng", phone: "08036789016", jerseyNumber: 8, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-111", fullName: "Chimaobi Nduka", email: "c.nduka@student.sdu.edu.ng", phone: "08036789017", jerseyNumber: 2, isCaptain: false, verificationStatus: "verified" },
+      { id: "p-112", fullName: "Obinna Opara", email: "o.opara@student.sdu.edu.ng", phone: "08036789018", jerseyNumber: 5, isCaptain: false, verificationStatus: "verified" },
     ],
   },
 ];
 
-// Seed Matches: Full 16-Match Knockout Tree (R16 = 8, QF = 4, SF = 2, 3rd = 1, Final = 1)
+// Seed Matches
 export const seedMatches: Match[] = [
   // Round of 16 (Matches 1-8)
   {
@@ -480,8 +486,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 1,
-    teamAId: "team-01", // Engineering Dynamos
-    teamBId: "team-16", // Ozoro Lions FC
+    teamAId: "team-01",
+    teamBId: "team-16",
     scheduledTime: "2026-11-20T14:00:00Z",
     pitchLocation: "SDU Pitch 1 (Monkey Post A)",
     status: "completed",
@@ -508,8 +514,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 2,
-    teamAId: "team-08", // Golden Strikers
-    teamBId: "team-09", // Phoenix Knights
+    teamAId: "team-08",
+    teamBId: "team-09",
     scheduledTime: "2026-11-20T15:30:00Z",
     pitchLocation: "SDU Pitch 1 (Monkey Post A)",
     status: "completed",
@@ -540,8 +546,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 3,
-    teamAId: "team-04", // Campus Titans
-    teamBId: "team-13", // Redeemed Warriors
+    teamAId: "team-04",
+    teamBId: "team-13",
     scheduledTime: "2026-11-21T14:00:00Z",
     pitchLocation: "SDU Pitch 2 (Monkey Post B)",
     status: "completed",
@@ -565,8 +571,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 4,
-    teamAId: "team-05", // Agro All-Stars
-    teamBId: "team-12", // SDU Invincibles
+    teamAId: "team-05",
+    teamBId: "team-12",
     scheduledTime: "2026-11-21T15:30:00Z",
     pitchLocation: "SDU Pitch 2 (Monkey Post B)",
     status: "completed",
@@ -590,8 +596,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 5,
-    teamAId: "team-02", // Ozoro City Ballers
-    teamBId: "team-15", // Southern Stars
+    teamAId: "team-02",
+    teamBId: "team-15",
     scheduledTime: "2026-11-22T14:00:00Z",
     pitchLocation: "SDU Pitch 1",
     status: "completed",
@@ -615,8 +621,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 6,
-    teamAId: "team-07", // Red Devils SDU
-    teamBId: "team-10", // Thunderbolts United
+    teamAId: "team-07",
+    teamBId: "team-10",
     scheduledTime: "2026-11-22T15:30:00Z",
     pitchLocation: "SDU Pitch 1",
     status: "completed",
@@ -638,8 +644,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 7,
-    teamAId: "team-03", // Delta Falcons FC
-    teamBId: "team-14", // Kings of Monkey Post
+    teamAId: "team-03",
+    teamBId: "team-14",
     scheduledTime: "2026-11-23T14:00:00Z",
     pitchLocation: "SDU Pitch 2",
     status: "completed",
@@ -663,8 +669,8 @@ export const seedMatches: Match[] = [
     round: "round_of_16",
     roundLabel: "Round of 16",
     matchNumber: 8,
-    teamAId: "team-06", // Ozoro Spartans
-    teamBId: "team-11", // Ozoro All-Stars
+    teamAId: "team-06",
+    teamBId: "team-11",
     scheduledTime: "2026-11-23T15:30:00Z",
     pitchLocation: "SDU Pitch 2",
     status: "completed",
@@ -688,8 +694,8 @@ export const seedMatches: Match[] = [
     round: "quarter_finals",
     roundLabel: "Quarter-Final 1",
     matchNumber: 9,
-    teamAId: "team-01", // Engineering Dynamos
-    teamBId: "team-08", // Golden Strikers
+    teamAId: "team-01",
+    teamBId: "team-08",
     scheduledTime: "2026-11-26T14:00:00Z",
     pitchLocation: "SDU Main Pitch",
     status: "completed",
@@ -711,8 +717,8 @@ export const seedMatches: Match[] = [
     round: "quarter_finals",
     roundLabel: "Quarter-Final 2",
     matchNumber: 10,
-    teamAId: "team-04", // Campus Titans
-    teamBId: "team-12", // SDU Invincibles
+    teamAId: "team-04",
+    teamBId: "team-12",
     scheduledTime: "2026-11-26T15:30:00Z",
     pitchLocation: "SDU Main Pitch",
     status: "completed",
@@ -732,8 +738,8 @@ export const seedMatches: Match[] = [
     round: "quarter_finals",
     roundLabel: "Quarter-Final 3",
     matchNumber: 11,
-    teamAId: "team-02", // Ozoro City Ballers
-    teamBId: "team-07", // Red Devils SDU
+    teamAId: "team-02",
+    teamBId: "team-07",
     scheduledTime: "2026-11-27T14:00:00Z",
     pitchLocation: "SDU Main Pitch",
     status: "completed",
@@ -757,8 +763,8 @@ export const seedMatches: Match[] = [
     round: "quarter_finals",
     roundLabel: "Quarter-Final 4",
     matchNumber: 12,
-    teamAId: "team-03", // Delta Falcons FC
-    teamBId: "team-06", // Ozoro Spartans
+    teamAId: "team-03",
+    teamBId: "team-06",
     scheduledTime: "2026-11-27T15:30:00Z",
     pitchLocation: "SDU Main Pitch",
     status: "completed",
@@ -781,8 +787,8 @@ export const seedMatches: Match[] = [
     round: "semi_finals",
     roundLabel: "Semi-Final 1",
     matchNumber: 13,
-    teamAId: "team-01", // Engineering Dynamos
-    teamBId: "team-12", // SDU Invincibles
+    teamAId: "team-01",
+    teamBId: "team-12",
     scheduledTime: "2026-11-30T14:30:00Z",
     pitchLocation: "SDU Main Stadium Pitch",
     status: "completed",
@@ -804,8 +810,8 @@ export const seedMatches: Match[] = [
     round: "semi_finals",
     roundLabel: "Semi-Final 2",
     matchNumber: 14,
-    teamAId: "team-02", // Ozoro City Ballers
-    teamBId: "team-03", // Delta Falcons FC
+    teamAId: "team-02",
+    teamBId: "team-03",
     scheduledTime: "2026-11-30T16:00:00Z",
     pitchLocation: "SDU Main Stadium Pitch",
     status: "completed",
@@ -825,10 +831,10 @@ export const seedMatches: Match[] = [
     id: "m-15",
     eventId: "e-football-001",
     round: "third_place",
-    roundLabel: "3rd Place Playoff (₦10,000 Prize)",
+    roundLabel: "3rd Place Playoff",
     matchNumber: 15,
-    teamAId: "team-12", // SDU Invincibles (Loser SF1)
-    teamBId: "team-03", // Delta Falcons FC (Loser SF2)
+    teamAId: "team-12",
+    teamBId: "team-03",
     scheduledTime: "2026-12-05T13:30:00Z",
     pitchLocation: "SDU Main Stadium Pitch",
     status: "scheduled",
@@ -846,10 +852,10 @@ export const seedMatches: Match[] = [
     id: "m-16",
     eventId: "e-football-001",
     round: "final",
-    roundLabel: "Grand Final (₦50,000 Champion / ₦20,000 Runner-up)",
+    roundLabel: "Grand Final",
     matchNumber: 16,
-    teamAId: "team-01", // Engineering Dynamos (Winner SF1)
-    teamBId: "team-02", // Ozoro City Ballers (Winner SF2)
+    teamAId: "team-01",
+    teamBId: "team-02",
     scheduledTime: "2026-12-05T15:30:00Z",
     pitchLocation: "SDU Main Stadium Pitch",
     status: "scheduled",
@@ -860,11 +866,11 @@ export const seedMatches: Match[] = [
     refereeName: "Mr. Festus Orovwuje",
     matchCoordinatorName: "Tournament Director",
     phoneOperatorName: "Volunteer Tobi & Volunteer Blessing",
-    matchReport: "Anticipated final clash between top seeds Engineering Dynamos and Ozoro City Ballers. Live updates on Instagram & TikTok.",
+    matchReport: "Championship clash between top seeds Engineering Dynamos and Ozoro City Ballers.",
   },
 ];
 
-// Seed Marathon Categories & Participants
+// Seed Marathon Categories & Participants (Without matric)
 export const seedRaceCategories: RaceCategory[] = [
   {
     id: "rc-10k",
@@ -894,13 +900,12 @@ export const seedParticipants: Participant[] = [
     fullName: "Emmanuel Edafe",
     email: "e.edafe@student.sdu.edu.ng",
     phone: "08035559911",
-    matricNumber: "SDU/PHY/2022/0311",
     gender: "male",
     dateOfBirth: "2003-05-14",
-    emergencyContactName: "Dr. Godwin Edafe (Father)",
+    emergencyContactName: "Dr. Godwin Edafe",
     emergencyContactPhone: "08023334455",
     emergencyContactRelationship: "Father",
-    medicalNotes: "No known cardiovascular issues or allergies.",
+    medicalNotes: "No known issues",
     tShirtSize: "L",
     bibNumber: "101",
     checkInStatus: true,
@@ -916,13 +921,12 @@ export const seedParticipants: Participant[] = [
     fullName: "Blessing Akpomiemie",
     email: "b.akpomiemie@student.sdu.edu.ng",
     phone: "08035559912",
-    matricNumber: "SDU/NUR/2023/0419",
     gender: "female",
     dateOfBirth: "2004-09-22",
     emergencyContactName: "Mrs. Grace Akpomiemie",
     emergencyContactPhone: "08039998877",
     emergencyContactRelationship: "Mother",
-    medicalNotes: "Mild asthma; carries personal inhaler in pocket.",
+    medicalNotes: "Mild asthma; carries personal inhaler",
     tShirtSize: "M",
     bibNumber: "102",
     checkInStatus: true,
@@ -938,7 +942,6 @@ export const seedParticipants: Participant[] = [
     fullName: "Chidubem Okafor",
     email: "c.dubem@student.sdu.edu.ng",
     phone: "08035559913",
-    matricNumber: "SDU/ENG/2021/0812",
     gender: "male",
     dateOfBirth: "2002-11-03",
     emergencyContactName: "Pastor Okafor",
@@ -959,7 +962,6 @@ export const seedParticipants: Participant[] = [
     fullName: "Favour Enaruna",
     email: "f.enaruna@student.sdu.edu.ng",
     phone: "08035559914",
-    matricNumber: "SDU/BIO/2023/0150",
     gender: "female",
     dateOfBirth: "2004-03-19",
     emergencyContactName: "Joy Enaruna",
@@ -980,7 +982,6 @@ export const seedParticipants: Participant[] = [
     fullName: "Ochuko Dafiaghor",
     email: "o.dafiaghor@student.sdu.edu.ng",
     phone: "08035559915",
-    matricNumber: "SDU/GEO/2022/0290",
     gender: "male",
     dateOfBirth: "2003-08-11",
     emergencyContactName: "Anthony Dafiaghor",
@@ -993,7 +994,7 @@ export const seedParticipants: Participant[] = [
   },
 ];
 
-// Seed Marathon Results (Sample 10K results)
+// Seed Marathon Results
 export const seedRaceResults: RaceResult[] = [
   {
     id: "res-01",
@@ -1001,7 +1002,7 @@ export const seedRaceResults: RaceResult[] = [
     participantId: "runner-01",
     participantName: "Emmanuel Edafe",
     bibNumber: "101",
-    gunTimeSeconds: 2184, // 36m 24s
+    gunTimeSeconds: 2184,
     chipTimeSeconds: 2180,
     finishingPosition: 1,
     status: "finished",
@@ -1013,7 +1014,7 @@ export const seedRaceResults: RaceResult[] = [
     participantId: "runner-03",
     participantName: "Chidubem Okafor",
     bibNumber: "103",
-    gunTimeSeconds: 2315, // 38m 35s
+    gunTimeSeconds: 2315,
     chipTimeSeconds: 2311,
     finishingPosition: 2,
     status: "finished",
@@ -1024,7 +1025,7 @@ export const seedRaceResults: RaceResult[] = [
     participantId: "runner-02",
     participantName: "Blessing Akpomiemie",
     bibNumber: "102",
-    gunTimeSeconds: 2472, // 41m 12s
+    gunTimeSeconds: 2472,
     chipTimeSeconds: 2468,
     finishingPosition: 3,
     status: "finished",
@@ -1032,7 +1033,7 @@ export const seedRaceResults: RaceResult[] = [
   },
 ];
 
-// Seed Payments (16 Teams paid ₦10,000 each = ₦160,000 total registration revenue!)
+// Seed Payments
 export const seedPayments: Payment[] = [
   {
     id: "pay-01",
@@ -1044,7 +1045,7 @@ export const seedPayments: Payment[] = [
     transferReference: "FBN-TRF-2026-89102",
     status: "verified",
     verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
+    verifiedByName: "Finance Officer",
     verifiedAt: "2026-11-01T14:00:00Z",
     createdAt: "2026-11-01T10:30:00Z",
   },
@@ -1058,248 +1059,23 @@ export const seedPayments: Payment[] = [
     transferReference: "GTB-TRF-2026-11442",
     status: "verified",
     verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
+    verifiedByName: "Finance Officer",
     verifiedAt: "2026-11-01T15:00:00Z",
     createdAt: "2026-11-01T11:45:00Z",
   },
-  {
-    id: "pay-03",
-    registrationId: "reg-03",
-    eventId: "e-football-001",
-    payerName: "Precious Oghenekaro",
-    transferDate: "2026-11-01",
-    amount: 10000,
-    transferReference: "ZEN-TRF-2026-44321",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-01T16:00:00Z",
-    createdAt: "2026-11-01T12:30:00Z",
-  },
-  {
-    id: "pay-04",
-    registrationId: "reg-04",
-    eventId: "e-football-001",
-    payerName: "Daniel Okotete",
-    transferDate: "2026-11-01",
-    amount: 10000,
-    transferReference: "UBA-TRF-2026-90432",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-01T17:00:00Z",
-    createdAt: "2026-11-01T14:00:00Z",
-  },
-  {
-    id: "pay-05",
-    registrationId: "reg-05",
-    eventId: "e-football-001",
-    payerName: "Faithful Igbinosa",
-    transferDate: "2026-11-02",
-    amount: 10000,
-    transferReference: "OPAY-TRF-2026-10293",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-02T12:00:00Z",
-    createdAt: "2026-11-02T09:40:00Z",
-  },
-  {
-    id: "pay-06",
-    registrationId: "reg-06",
-    eventId: "e-football-001",
-    payerName: "Ejiro Onome",
-    transferDate: "2026-11-02",
-    amount: 10000,
-    transferReference: "KUDA-TRF-2026-77881",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-02T13:00:00Z",
-    createdAt: "2026-11-02T11:00:00Z",
-  },
-  {
-    id: "pay-07",
-    registrationId: "reg-07",
-    eventId: "e-football-001",
-    payerName: "Osita Eze",
-    transferDate: "2026-11-02",
-    amount: 10000,
-    transferReference: "FBN-TRF-2026-55443",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-02T15:00:00Z",
-    createdAt: "2026-11-02T12:15:00Z",
-  },
-  {
-    id: "pay-08",
-    registrationId: "reg-08",
-    eventId: "e-football-001",
-    payerName: "Komeh Ediri",
-    transferDate: "2026-11-02",
-    amount: 10000,
-    transferReference: "PALM-TRF-2026-99210",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-02T16:00:00Z",
-    createdAt: "2026-11-02T13:30:00Z",
-  },
-  {
-    id: "pay-09",
-    registrationId: "reg-09",
-    eventId: "e-football-001",
-    payerName: "Toluwani Adeyemi",
-    transferDate: "2026-11-03",
-    amount: 10000,
-    transferReference: "ACC-TRF-2026-33219",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-03T11:00:00Z",
-    createdAt: "2026-11-03T09:50:00Z",
-  },
-  {
-    id: "pay-10",
-    registrationId: "reg-10",
-    eventId: "e-football-001",
-    payerName: "Eromosele Akhere",
-    transferDate: "2026-11-03",
-    amount: 10000,
-    transferReference: "FBN-TRF-2026-44129",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-03T13:00:00Z",
-    createdAt: "2026-11-03T11:20:00Z",
-  },
-  {
-    id: "pay-11",
-    registrationId: "reg-11",
-    eventId: "e-football-001",
-    payerName: "Tarila Ebikeme",
-    transferDate: "2026-11-03",
-    amount: 10000,
-    transferReference: "GTB-TRF-2026-66712",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-03T16:00:00Z",
-    createdAt: "2026-11-03T14:40:00Z",
-  },
-  {
-    id: "pay-12",
-    registrationId: "reg-12",
-    eventId: "e-football-001",
-    payerName: "Ubong Bassey",
-    transferDate: "2026-11-04",
-    amount: 10000,
-    transferReference: "ZEN-TRF-2026-88910",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-04T11:00:00Z",
-    createdAt: "2026-11-04T09:20:00Z",
-  },
-  {
-    id: "pay-13",
-    registrationId: "reg-13",
-    eventId: "e-football-001",
-    payerName: "Ezekiel Agbonlahor",
-    transferDate: "2026-11-04",
-    amount: 10000,
-    transferReference: "FBN-TRF-2026-12390",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-04T13:00:00Z",
-    createdAt: "2026-11-04T11:40:00Z",
-  },
-  {
-    id: "pay-14",
-    registrationId: "reg-14",
-    eventId: "e-football-001",
-    payerName: "Oghenero Ovwigho",
-    transferDate: "2026-11-04",
-    amount: 10000,
-    transferReference: "OPAY-TRF-2026-78342",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-04T15:00:00Z",
-    createdAt: "2026-11-04T13:55:00Z",
-  },
-  {
-    id: "pay-15",
-    registrationId: "reg-15",
-    eventId: "e-football-001",
-    payerName: "Ebiakpo Tamara",
-    transferDate: "2026-11-04",
-    amount: 10000,
-    transferReference: "UBA-TRF-2026-45601",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-04T16:30:00Z",
-    createdAt: "2026-11-04T15:15:00Z",
-  },
-  {
-    id: "pay-16",
-    registrationId: "reg-16",
-    eventId: "e-football-001",
-    payerName: "Uchechukwu Okeke",
-    transferDate: "2026-11-04",
-    amount: 10000,
-    transferReference: "FBN-TRF-2026-90123",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-04T18:00:00Z",
-    createdAt: "2026-11-04T16:45:00Z",
-  },
-  // Marathon registrations
-  {
-    id: "pay-run-01",
-    registrationId: "reg-run-01",
-    eventId: "e-marathon-002",
-    payerName: "Emmanuel Edafe",
-    transferDate: "2026-11-05",
-    amount: 3000,
-    transferReference: "FBN-TRF-2026-RUN01",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-05T12:00:00Z",
-    createdAt: "2026-11-05T10:15:00Z",
-  },
-  {
-    id: "pay-run-02",
-    registrationId: "reg-run-02",
-    eventId: "e-marathon-002",
-    payerName: "Blessing Akpomiemie",
-    transferDate: "2026-11-05",
-    amount: 3000,
-    transferReference: "GTB-TRF-2026-RUN02",
-    status: "verified",
-    verifiedBy: "admin-finance",
-    verifiedByName: "Finance Officer (SDU)",
-    verifiedAt: "2026-11-05T14:00:00Z",
-    createdAt: "2026-11-05T11:45:00Z",
-  },
 ];
 
-// Seed Media Assets (Volunteer content, TikTok & Instagram links, match photos)
+// Seed Media Assets
 export const seedMediaAssets: MediaAsset[] = [
   {
     id: "media-01",
     eventId: "e-football-001",
     mediaType: "highlight",
-    title: "Chinedu Okafor Opening Goal vs Ozoro Lions (Round of 16)",
-    caption: "Incredible low drive past two defenders into the bottom corner. Captured from sideline phone recording.",
+    title: "Round of 16 Opening Goal Highlight",
+    caption: "Low strike into corner from sideline phone recording.",
     url: "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=80",
     platform: "instagram",
-    embedCode: "https://instagram.com/p/wfc_goal_01",
+    embedCode: "https://instagram.com",
     isFeatured: true,
     createdAt: "2026-11-20T17:00:00Z",
   },
@@ -1307,35 +1083,13 @@ export const seedMediaAssets: MediaAsset[] = [
     id: "media-02",
     eventId: "e-football-001",
     mediaType: "video",
-    title: "Golden Strikers Penalty Shootout Drama",
-    caption: "Sudden death kicks from the long-distance spot in Monkey Post tie-break.",
+    title: "Penalty Shootout Decider",
+    caption: "Sudden death spot kicks in tie-break.",
     url: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80",
     platform: "tiktok",
-    embedCode: "https://tiktok.com/@wfc/video/shootout",
+    embedCode: "https://tiktok.com",
     isFeatured: true,
     createdAt: "2026-11-20T18:30:00Z",
-  },
-  {
-    id: "media-03",
-    eventId: "e-football-001",
-    mediaType: "photo",
-    title: "Quarter-Finals Matchday Atmosphere at SDU Pitch 1",
-    caption: "Student crowd cheering their departmental teams during the intense knockout clashes.",
-    url: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80",
-    platform: "local",
-    isFeatured: true,
-    createdAt: "2026-11-26T18:00:00Z",
-  },
-  {
-    id: "media-04",
-    eventId: "e-marathon-002",
-    mediaType: "photo",
-    title: "Campus 10K Route Inspection & Checkpoint Setup",
-    caption: "Organizing committee marking water stations every 2.5km along the SDU perimeter road.",
-    url: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80",
-    platform: "local",
-    isFeatured: false,
-    createdAt: "2026-11-07T12:00:00Z",
   },
 ];
 
@@ -1344,32 +1098,22 @@ export const seedAnnouncements: Announcement[] = [
   {
     id: "ann-01",
     eventId: "e-football-001",
-    title: "Official 16-Team Random Draw Complete & Knockout Fixtures Published",
+    title: "Official 16-Team Random Draw Complete & Fixtures Published",
     slug: "draw-complete-fixtures-published",
     category: "fixtures",
-    content: "The Tournament Committee has concluded the random draw with witnesses from student departmental associations. All 16 registered and payment-verified teams have been placed in the single-elimination bracket.",
+    content: "The Tournament Committee has concluded the random draw. All 16 registered teams are placed in the single-elimination bracket.",
     isPinned: true,
     publishedAt: "2026-11-19T18:00:00Z",
   },
   {
     id: "ann-02",
     eventId: "e-football-001",
-    title: "Reminder: Disciplinary Card Fines & 15-Minute Walkover Grace Period",
+    title: "Reminder: Card Fines & 15-Minute Walkover Grace Period",
     slug: "disciplinary-rules-and-grace-period",
     category: "disciplinary",
-    content: "All captains are reminded: Yellow cards carry a ₦1,000 fine; Red cards carry a ₦3,000 fine and an automatic next-match sporting suspension. Teams must be ready on pitch within 15 minutes of scheduled kickoff or face walkover forfeit.",
+    content: "Captains: Yellow cards carry a ₦1,000 fine; Red cards carry ₦3,000 + 1-match ban. Teams must report ready within 15 minutes of scheduled kickoff.",
     isPinned: true,
     publishedAt: "2026-11-19T20:00:00Z",
-  },
-  {
-    id: "ann-03",
-    eventId: "e-marathon-002",
-    title: "Winners Marathon Challenge: Bib Collection & Medical Checkup Schedule",
-    slug: "marathon-bib-collection-notice",
-    category: "general",
-    content: "Registered runners for both 10K Campus Elite and 5K Fun Run may collect their official numbered bibs and runner packs at the SDU Sports Center Pavilion starting Friday 8:00 AM.",
-    isPinned: false,
-    publishedAt: "2026-11-06T15:00:00Z",
   },
 ];
 
@@ -1378,36 +1122,15 @@ export const seedAuditLogs: AuditLog[] = [
   {
     id: "log-01",
     adminUserId: "admin-finance",
-    adminName: "Finance Officer (SDU)",
+    adminName: "Finance Officer",
     action: "VERIFY_PAYMENT",
     entityType: "payment",
-    entityId: "pay-16",
-    details: "Approved ₦10,000 transfer from Uchechukwu Okeke (Ozoro Lions FC). Bank reference FBN-TRF-2026-90123 confirmed.",
-    createdAt: "2026-11-04T18:00:00Z",
-  },
-  {
-    id: "log-02",
-    adminUserId: "admin-director",
-    adminName: "Tournament Director",
-    action: "GENERATE_DRAW",
-    entityType: "event",
-    entityId: "e-football-001",
-    details: "Conducted random bracket seed draw for 16 confirmed teams with witnesses.",
-    createdAt: "2026-11-19T17:30:00Z",
-  },
-  {
-    id: "log-03",
-    adminUserId: "admin-football",
-    adminName: "Match Coordinator",
-    action: "RECORD_MATCH_RESULT",
-    entityType: "match",
-    entityId: "m-01",
-    details: "Recorded score: Engineering Dynamos 3 - 1 Ozoro Lions FC. Assessed ₦1,000 yellow card fine to Ebuka Nwabueze.",
-    createdAt: "2026-11-20T15:00:00Z",
+    entityId: "pay-01",
+    details: "Verified ₦10,000 transfer from Chinedu Okafor (Engineering Dynamos).",
+    createdAt: "2026-11-01T14:00:00Z",
   },
 ];
 
-// Simple in-memory storage manager allowing CRUD modifications
 class WSCStore {
   private events: WSCEvent[] = [...seedEvents];
   private teams: Team[] = [...seedTeams];
@@ -1419,25 +1142,114 @@ class WSCStore {
   private mediaAssets: MediaAsset[] = [...seedMediaAssets];
   private announcements: Announcement[] = [...seedAnnouncements];
   private auditLogs: AuditLog[] = [...seedAuditLogs];
+  private captainAccounts: CaptainAccount[] = [
+    {
+      id: "capt-01",
+      email: "c.okafor@student.sdu.edu.ng",
+      fullName: "Chinedu Okafor",
+      phone: "08031112233",
+      teamId: "team-01",
+      createdAt: "2026-11-01T10:00:00Z",
+    }
+  ];
 
-  // Events
+  // Events & Dynamic Parameters
   getEvents() { return this.events; }
   getEventById(id: string) { return this.events.find(e => e.id === id || e.slug === id); }
+  
   updateEvent(updated: Partial<WSCEvent> & { id: string }) {
     this.events = this.events.map(e => e.id === updated.id ? { ...e, ...updated } : e);
     return this.getEventById(updated.id);
   }
 
-  // Teams & Football
+  updateEventTournamentParameters(eventId: string, params: {
+    maxTeams: number;
+    squadSize: number;
+    playersOnPitch: number;
+    prizePoolTotal: number;
+    prizeFirst: number;
+    prizeSecond: number;
+    prizeThird: number;
+    halfDurationMinutes: number;
+    gracePeriodMinutes: number;
+    yellowCardFine: number;
+    redCardFine: number;
+  }) {
+    const event = this.getEventById(eventId);
+    if (!event) return null;
+    return this.updateEvent({
+      id: event.id,
+      ...params,
+    });
+  }
+
+  // Teams & Captains & Invite Code System
   getTeams(eventId?: string) {
     if (eventId) return this.teams.filter(t => t.eventId === eventId);
     return this.teams;
   }
   getTeamById(id: string) { return this.teams.find(t => t.id === id); }
+  getTeamByInviteCode(code: string) {
+    const clean = code.trim().toUpperCase();
+    return this.teams.find(t => t.inviteCode.toUpperCase() === clean);
+  }
+
   addTeam(newTeam: Team) {
     this.teams.push(newTeam);
     return newTeam;
   }
+
+  registerCaptainAccount(account: CaptainAccount) {
+    this.captainAccounts.push(account);
+    return account;
+  }
+
+  getCaptainByEmail(email: string) {
+    return this.captainAccounts.find(c => c.email.toLowerCase() === email.toLowerCase().trim());
+  }
+
+  joinTeamWithInviteCode(inviteCode: string, player: {
+    fullName: string;
+    email: string;
+    phone: string;
+    jerseyNumber: number;
+  }): { success: boolean; error?: string; player?: TeamPlayer } {
+    const team = this.getTeamByInviteCode(inviteCode);
+    if (!team) {
+      return { success: false, error: "Invalid invitation code. Please check with your team captain." };
+    }
+
+    const event = this.getEventById(team.eventId);
+    const maxSquad = event?.squadSize || 7;
+
+    if (team.players.length >= maxSquad) {
+      return { success: false, error: `Team roster is full (maximum ${maxSquad} players registered).` };
+    }
+
+    const emailClean = player.email.trim().toLowerCase();
+    const phoneClean = player.phone.trim();
+
+    // Check duplicate email across teams
+    const allPlayers = this.teams.flatMap(t => t.players);
+    if (allPlayers.some(p => p.email.toLowerCase() === emailClean)) {
+      return { success: false, error: "A player with this email is already registered on a team." };
+    }
+
+    const newTeamPlayer: TeamPlayer = {
+      id: `p-${Date.now()}`,
+      fullName: player.fullName.trim(),
+      email: emailClean,
+      phone: phoneClean,
+      jerseyNumber: player.jerseyNumber,
+      isCaptain: false,
+      verificationStatus: "verified",
+      joinedViaInvite: true,
+    };
+
+    team.players.push(newTeamPlayer);
+    return { success: true, player: newTeamPlayer };
+  }
+
   updateTeamStatus(teamId: string, status: Team["status"]) {
     this.teams = this.teams.map(t => t.id === teamId ? { ...t, status } : t);
   }
@@ -1518,7 +1330,6 @@ class WSCStore {
       return p;
     });
 
-    // Also update team or participant confirmation
     const payment = this.payments.find(p => p.id === paymentId);
     if (payment && approved) {
       const team = this.teams.find(t => t.registrationId === payment.registrationId);
@@ -1561,5 +1372,4 @@ class WSCStore {
   }
 }
 
-// Global singleton instance
 export const store = new WSCStore();

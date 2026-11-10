@@ -10,26 +10,25 @@ import {
   CreditCard, 
   ShieldCheck, 
   Heart,
-  Printer 
+  ArrowRight
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { siteConfig } from "@/config/site";
 import { store } from "@/services/store";
 import { generateReferenceCode, formatNaira } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 export default function MarathonRegistrationPage() {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [error, setError] = useState<string | null>(null);
   const [submittedRef, setSubmittedRef] = useState<string | null>(null);
   const [assignedBib, setAssignedBib] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
   const [category, setCategory] = useState<"rc-10k" | "rc-5k">("rc-10k");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [matricNumber, setMatricNumber] = useState("");
   const [gender, setGender] = useState<"male" | "female" | "other">("male");
   const [dateOfBirth, setDateOfBirth] = useState("2003-01-01");
   const [tShirtSize, setTShirtSize] = useState<"S" | "M" | "L" | "XL" | "2XL">("M");
@@ -51,7 +50,7 @@ export default function MarathonRegistrationPage() {
   const validateStep1 = () => {
     setError(null);
     if (!fullName.trim() || !email.trim() || !phone.trim()) {
-      setError("Please fill in your full name, email, and phone number.");
+      setError("Please complete all personal contact fields.");
       return false;
     }
     return true;
@@ -60,11 +59,20 @@ export default function MarathonRegistrationPage() {
   const validateStep2 = () => {
     setError(null);
     if (!emergencyName.trim() || !emergencyPhone.trim() || !emergencyRelation.trim()) {
-      setError("Mandatory safety requirement: Please provide an emergency contact name, phone, and relationship.");
+      setError("Safety requirement: Please provide an emergency contact name, phone, and relationship.");
       return false;
     }
     if (!healthAgreed) {
-      setError("You must acknowledge the health and fitness declaration before participating.");
+      setError("Please acknowledge the health and fitness safety declaration.");
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep3 = () => {
+    setError(null);
+    if (!payerName.trim() || !transferRef.trim()) {
+      setError("Please enter the sender account name and official transfer reference code.");
       return false;
     }
     return true;
@@ -72,504 +80,489 @@ export default function MarathonRegistrationPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep3()) return;
+
+    setIsSubmitting(true);
     setError(null);
 
-    if (!payerName.trim() || !transferRef.trim()) {
-      setError("Please enter the payer name and official bank transfer reference code.");
-      return;
-    }
-
-    const refCode = generateReferenceCode("WMC");
-    const regId = `reg-run-${Date.now()}`;
-    const runnerId = `runner-${Date.now()}`;
-    
-    // Generate bib: 10K = 100 series, 5K = 500 series
-    const existing = store.getParticipants("e-marathon-002");
-    const count = existing.length + 1;
-    const bib = category === "rc-10k" ? `${100 + count}` : `${500 + count}`;
-
-    const newParticipant = {
-      id: runnerId,
-      registrationId: regId,
-      eventId: "e-marathon-002",
-      raceCategoryId: category,
-      raceCategoryName: category === "rc-10k" ? "10K Campus Elite Challenge" : "5K Campus Fun Run",
-      fullName: fullName.trim(),
-      email: email.trim().toLowerCase(),
-      phone: phone.trim(),
-      matricNumber: matricNumber.trim() ? matricNumber.trim().toUpperCase() : undefined,
-      gender,
-      dateOfBirth,
-      emergencyContactName: emergencyName.trim(),
-      emergencyContactPhone: emergencyPhone.trim(),
-      emergencyContactRelationship: emergencyRelation.trim(),
-      medicalNotes: medicalNotes.trim() || undefined,
-      tShirtSize,
-      bibNumber: bib,
-      checkInStatus: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    store.addParticipant(newParticipant);
-
-    store.addPayment({
-      id: `pay-${Date.now()}`,
-      registrationId: regId,
-      eventId: "e-marathon-002",
-      payerName: payerName.trim(),
-      transferDate,
-      amount: fee,
-      transferReference: transferRef.trim(),
-      status: "pending_verification",
-      createdAt: new Date().toISOString(),
-    });
-
-    store.addAuditLog({
-      adminUserId: "system",
-      adminName: "Public Registration Engine",
-      action: "REGISTER_MARATHON_RUNNER",
-      entityType: "participant",
-      entityId: runnerId,
-      details: `Registered runner ${fullName} for ${newParticipant.raceCategoryName}. Assigned Bib #${bib}. Payment Ref: ${transferRef}`,
-    });
-
-    setAssignedBib(bib);
-    setSubmittedRef(refCode);
     try {
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-    } catch {}
+      const refCode = generateReferenceCode("WMC");
+      const regId = `reg-run-${Date.now()}`;
+      const runnerId = `runner-${Date.now()}`;
+      
+      const existing = store.getParticipants("e-marathon-002");
+      const count = existing.length + 1;
+      const bib = category === "rc-10k" ? `${100 + count}` : `${500 + count}`;
+
+      const newParticipant = {
+        id: runnerId,
+        registrationId: regId,
+        eventId: "e-marathon-002",
+        raceCategoryId: category,
+        raceCategoryName: category === "rc-10k" ? "10K Campus Elite Challenge" : "5K Campus Fun Run",
+        fullName: fullName.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        gender,
+        dateOfBirth,
+        emergencyContactName: emergencyName.trim(),
+        emergencyContactPhone: emergencyPhone.trim(),
+        emergencyContactRelationship: emergencyRelation.trim(),
+        medicalNotes: medicalNotes.trim() || undefined,
+        tShirtSize,
+        bibNumber: bib,
+        checkInStatus: false,
+        createdAt: new Date().toISOString(),
+      };
+
+      store.addParticipant(newParticipant);
+
+      store.addPayment({
+        id: `pay-${Date.now()}`,
+        registrationId: regId,
+        eventId: "e-marathon-002",
+        payerName: payerName.trim(),
+        transferDate,
+        amount: fee,
+        transferReference: transferRef.trim(),
+        status: "pending_verification",
+        createdAt: new Date().toISOString(),
+      });
+
+      store.addAuditLog({
+        adminUserId: "system-portal",
+        adminName: "Public Registration Desk",
+        action: "MARATHON_RUNNER_REGISTERED",
+        entityType: "Participant",
+        entityId: runnerId,
+        details: `Runner ${fullName.trim()} registered for ${newParticipant.raceCategoryName} with Bib #${bib}`,
+      });
+
+      setAssignedBib(bib);
+      setSubmittedRef(refCode);
+      setStep(4);
+    } catch (err: any) {
+      setError(err?.message || "Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  if (submittedRef) {
-    return (
-      <div className="container py-16 max-w-2xl text-center space-y-6">
-        <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-brand-emerald border border-brand-emerald/40 flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/20">
-          <CheckCircle2 className="w-8 h-8" />
-        </div>
-
-        <div className="space-y-2">
-          <h2 className="text-3xl font-black text-white uppercase tracking-tight">
-            Runner Registered!
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Your race entry has been recorded and your official bib number has been allocated.
-          </p>
-        </div>
-
-        {/* Confirmation Card */}
-        <div className="p-6 rounded-3xl border border-white/10 bg-card/80 text-left space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Assigned Official Bib
-              </div>
-              <div className="font-mono text-4xl font-black text-brand-emerald">
-                #{assignedBib}
-              </div>
-            </div>
-            <div className="text-right">
-              <span className="text-xs uppercase font-bold px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                Payment Verification Pending
-              </span>
-              <div className="font-mono text-xs text-muted-foreground mt-1">{submittedRef}</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <div className="text-muted-foreground">Runner:</div>
-              <div className="font-bold text-white text-sm">{fullName}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Race Division:</div>
-              <div className="font-bold text-white text-sm">
-                {category === "rc-10k" ? "10K Campus Elite" : "5K Fun Run"}
-              </div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">T-Shirt Size:</div>
-              <div className="font-bold text-white text-sm">{tShirtSize}</div>
-            </div>
-            <div>
-              <div className="text-muted-foreground">Emergency Contact:</div>
-              <div className="font-bold text-white text-sm">{emergencyName} ({emergencyPhone})</div>
-            </div>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-200/90 space-y-1">
-            <strong>Bib Collection:</strong>
-            <p className="text-[11px] leading-relaxed">
-              Show this registration code or your SDU student ID at the SDU Sports Center Pavilion on race morning (Dec 8, 6:00 AM) to collect your physical chest bib and timing chip.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-          <Link
-            href="/marathon"
-            className="px-6 py-3 rounded-xl bg-brand-emerald text-white font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 transition-all"
-          >
-            Back to Marathon Hub
-          </Link>
-          <button
-            onClick={() => window.print()}
-            className="px-6 py-3 rounded-xl border border-white/20 bg-white/5 text-white font-bold text-xs hover:bg-white/10 transition-all flex items-center gap-2"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Print Bib Slip</span>
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container py-12 md:py-16 max-w-3xl space-y-8">
+    <div className="container max-w-xl py-12 space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <Link
-          href="/marathon"
-          className="inline-flex items-center gap-1.5 text-xs text-brand-emerald hover:underline font-bold"
+      <div className="space-y-2 border-b border-border pb-4">
+        <Link 
+          href="/marathon" 
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 font-medium"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Marathon Hub</span>
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Marathon Challenge
         </Link>
-        <h1 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">
           Marathon Runner Registration
         </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground">
-          Enter the 10K Campus Elite or 5K Campus Fun Run at Southern Delta University, Ozoro.
+        <p className="text-xs text-muted-foreground">
+          Register for the 10K Campus Elite or 5K Fun Run. Secure your numbered bib and official race kit.
         </p>
       </div>
 
-      {/* Stepper */}
-      <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold">
-        <div className={cn(
-          "p-2.5 rounded-xl border transition-all",
-          step >= 1 ? "bg-emerald-500/20 border-brand-emerald text-brand-emerald" : "bg-white/5 border-white/10 text-muted-foreground"
-        )}>
-          1. Division & Profile
+      {/* Progress Steps (1 to 3) */}
+      {step < 4 && (
+        <div className="grid grid-cols-3 gap-2 text-xs">
+          <div className={cn(
+            "p-2.5 rounded-[6px] border text-center font-medium",
+            step === 1 ? "bg-primary/10 border-primary text-primary font-semibold" : step > 1 ? "bg-muted border-border text-foreground" : "border-border text-muted-foreground"
+          )}>
+            1. Division & Details
+          </div>
+          <div className={cn(
+            "p-2.5 rounded-[6px] border text-center font-medium",
+            step === 2 ? "bg-primary/10 border-primary text-primary font-semibold" : step > 2 ? "bg-muted border-border text-foreground" : "border-border text-muted-foreground"
+          )}>
+            2. Medical & Safety
+          </div>
+          <div className={cn(
+            "p-2.5 rounded-[6px] border text-center font-medium",
+            step === 3 ? "bg-primary/10 border-primary text-primary font-semibold" : "border-border text-muted-foreground"
+          )}>
+            3. Fee & Submit
+          </div>
         </div>
-        <div className={cn(
-          "p-2.5 rounded-xl border transition-all",
-          step >= 2 ? "bg-emerald-500/20 border-brand-emerald text-brand-emerald" : "bg-white/5 border-white/10 text-muted-foreground"
-        )}>
-          2. Emergency & Safety
-        </div>
-        <div className={cn(
-          "p-2.5 rounded-xl border transition-all",
-          step >= 3 ? "bg-emerald-500/20 border-brand-emerald text-brand-emerald" : "bg-white/5 border-white/10 text-muted-foreground"
-        )}>
-          3. Bank Transfer
-        </div>
-      </div>
+      )}
 
       {error && (
-        <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-xs text-red-300 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+        <div className="p-3 rounded-[6px] bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* STEP 1: DIVISION & PROFILE */}
+      {/* STEP 1: Division & Personal Details */}
       {step === 1 && (
-        <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-6">
-          <div className="border-b border-white/10 pb-3">
-            <h3 className="font-extrabold text-lg text-white">Step 1: Choose Division & Personal Information</h3>
-            <p className="text-xs text-muted-foreground">Select your distance and provide your runner details.</p>
+        <div className="rounded-[6px] border border-border bg-card p-6 space-y-5 shadow-subtle text-xs">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-foreground">Select Division & Runner Information</h2>
+            <p className="text-muted-foreground">Choose your distance category and enter contact details.</p>
           </div>
 
           {/* Division Selector */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className={cn(
-              "p-4 rounded-2xl border cursor-pointer transition-all space-y-2",
-              category === "rc-10k" ? "border-brand-emerald bg-emerald-500/10 shadow-lg shadow-emerald-500/10" : "border-white/10 bg-white/[0.02]"
-            )}>
-              <div className="flex items-center justify-between">
-                <input
-                  type="radio"
-                  name="division"
-                  checked={category === "rc-10k"}
-                  onChange={() => setCategory("rc-10k")}
-                  className="h-4 w-4 text-brand-emerald focus:ring-brand-emerald"
-                />
-                <span className="font-mono font-bold text-xs text-brand-emerald">₦3,000 Fee</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-sm">10K Campus Elite Challenge</h4>
-                <p className="text-[11px] text-muted-foreground">
-                  2 laps, electronic chip timing, eligible for ₦30k / ₦15k / ₦5k cash prizes.
-                </p>
-              </div>
-            </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setCategory("rc-10k")}
+              className={cn(
+                "p-3 rounded-[6px] border text-left space-y-1 transition-colors",
+                category === "rc-10k" ? "border-primary bg-primary/5 text-foreground" : "border-border text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <div className="font-bold text-foreground">10K Campus Elite</div>
+              <div className="text-primary font-mono font-semibold">₦3,000</div>
+              <div className="text-[11px] text-muted-foreground">Competitive Timed Road Race</div>
+            </button>
 
-            <label className={cn(
-              "p-4 rounded-2xl border cursor-pointer transition-all space-y-2",
-              category === "rc-5k" ? "border-brand-emerald bg-emerald-500/10 shadow-lg shadow-emerald-500/10" : "border-white/10 bg-white/[0.02]"
-            )}>
-              <div className="flex items-center justify-between">
-                <input
-                  type="radio"
-                  name="division"
-                  checked={category === "rc-5k"}
-                  onChange={() => setCategory("rc-5k")}
-                  className="h-4 w-4 text-brand-emerald focus:ring-brand-emerald"
-                />
-                <span className="font-mono font-bold text-xs text-brand-emerald">₦2,000 Fee</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-white text-sm">5K Campus Fun Run</h4>
-                <p className="text-[11px] text-muted-foreground">
-                  1 lap community run. Finisher certificate & post-race refreshment pack included.
-                </p>
-              </div>
-            </label>
+            <button
+              type="button"
+              onClick={() => setCategory("rc-5k")}
+              className={cn(
+                "p-3 rounded-[6px] border text-left space-y-1 transition-colors",
+                category === "rc-5k" ? "border-primary bg-primary/5 text-foreground" : "border-border text-muted-foreground hover:bg-muted"
+              )}
+            >
+              <div className="font-bold text-foreground">5K Campus Fun Run</div>
+              <div className="text-foreground font-mono font-semibold">₦2,000</div>
+              <div className="text-[11px] text-muted-foreground">Fitness & Community Run</div>
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="font-bold text-white">Full Name *</label>
+          <div className="space-y-3 pt-2">
+            <div className="space-y-1.5">
+              <label className="font-medium text-foreground block">
+                Full Name <span className="text-destructive">*</span>
+              </label>
               <input
                 type="text"
+                required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="Runner full name"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
+                placeholder="e.g. Osaro Igbinoba"
+                className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">Email Address *</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="runner@student.sdu.edu.ng"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">
+                  Email Address <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="runner@student.sdu.edu.ng"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">
+                  Phone Number <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="0803 123 4567"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                />
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">Phone Number *</label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="0803..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">Gender</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as any)}
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
 
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">SDU Matric Number (If Student)</label>
-              <input
-                type="text"
-                value={matricNumber}
-                onChange={(e) => setMatricNumber(e.target.value.toUpperCase())}
-                placeholder="SDU/.../... (Optional for general public)"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald font-mono"
-              />
-            </div>
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">Date of Birth</label>
+                <input
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
 
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">T-Shirt Size</label>
-              <select
-                value={tShirtSize}
-                onChange={(e) => setTShirtSize(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              >
-                <option value="S">Small (S)</option>
-                <option value="M">Medium (M)</option>
-                <option value="L">Large (L)</option>
-                <option value="XL">Extra Large (XL)</option>
-                <option value="2XL">2X Large (2XL)</option>
-              </select>
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">T-Shirt Size</label>
+                <select
+                  value={tShirtSize}
+                  onChange={(e) => setTShirtSize(e.target.value as any)}
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                >
+                  <option value="S">Small (S)</option>
+                  <option value="M">Medium (M)</option>
+                  <option value="L">Large (L)</option>
+                  <option value="XL">Extra Large (XL)</option>
+                  <option value="2XL">Double XL (2XL)</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end pt-4">
+          <div className="pt-4 border-t border-border flex justify-end">
             <button
               type="button"
               onClick={() => {
                 if (validateStep1()) setStep(2);
               }}
-              className="px-6 py-3 rounded-xl bg-brand-emerald text-white font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 flex items-center gap-2 active:scale-[0.96] transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-primary text-primary-foreground font-medium text-xs hover:bg-primary/90"
             >
-              <span>Continue to Emergency & Safety</span>
-              <Timer className="w-4 h-4" />
+              <span>Next: Safety & Medical</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       )}
 
-      {/* STEP 2: EMERGENCY & SAFETY */}
+      {/* STEP 2: Safety & Emergency Contact */}
       {step === 2 && (
-        <div className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-6">
-          <div className="border-b border-white/10 pb-3">
-            <h3 className="font-extrabold text-lg text-white">Step 2: Emergency Contact & Medical Declaration</h3>
-            <p className="text-xs text-muted-foreground">Mandatory safety requirements for campus endurance events.</p>
+        <div className="rounded-[6px] border border-border bg-card p-6 space-y-5 shadow-subtle text-xs">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-foreground">Medical Safety & Emergency Protocol</h2>
+            <p className="text-muted-foreground">Required for race safety and paramedic coordination.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="font-bold text-white">Emergency Contact Full Name *</label>
-              <input
-                type="text"
-                value={emergencyName}
-                onChange={(e) => setEmergencyName(e.target.value)}
-                placeholder="Parent, sibling or guardian"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5 sm:col-span-1">
+                <label className="font-medium text-foreground block">
+                  Emergency Contact Name <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={emergencyName}
+                  onChange={(e) => setEmergencyName(e.target.value)}
+                  placeholder="e.g. Dr. K. Igbinoba"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">
+                  Relationship <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={emergencyRelation}
+                  onChange={(e) => setEmergencyRelation(e.target.value)}
+                  placeholder="e.g. Parent / Guardian"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">
+                  Emergency Phone <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={emergencyPhone}
+                  onChange={(e) => setEmergencyPhone(e.target.value)}
+                  placeholder="0803 765 4321"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                />
+              </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-white">Emergency Contact Phone Number *</label>
-              <input
-                type="tel"
-                value={emergencyPhone}
-                onChange={(e) => setEmergencyPhone(e.target.value)}
-                placeholder="0802..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">Relationship *</label>
-              <input
-                type="text"
-                value={emergencyRelation}
-                onChange={(e) => setEmergencyRelation(e.target.value)}
-                placeholder="e.g. Father, Sister, Friend"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
-            </div>
-
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="font-bold text-white">Medical Notes / Allergies / Disclosures</label>
+              <label className="font-medium text-foreground block">
+                Medical Notes / Allergies (Optional)
+              </label>
               <textarea
+                rows={2}
                 value={medicalNotes}
                 onChange={(e) => setMedicalNotes(e.target.value)}
-                placeholder="Please state any asthma, allergies, cardiovascular notes, or prescription medications..."
-                rows={3}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald resize-none"
+                placeholder="e.g. Asthmatic (inhaler carried), penicillin allergy, previous knee surgery"
+                className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
+
+            <label className="flex items-start gap-2.5 pt-2 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={healthAgreed}
+                onChange={(e) => setHealthAgreed(e.target.checked)}
+                className="mt-0.5 rounded-[4px] border-border text-primary focus:ring-primary"
+              />
+              <span className="text-muted-foreground leading-relaxed">
+                I declare that I am physically fit to participate in this road running competition, and I will heed advice from SDU campus health officials and course marshals during the race.
+              </span>
+            </label>
           </div>
 
-          <label className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] flex items-start gap-3 cursor-pointer text-xs">
-            <input
-              type="checkbox"
-              checked={healthAgreed}
-              onChange={(e) => setHealthAgreed(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-white/20 text-brand-emerald focus:ring-brand-emerald"
-            />
-            <div className="space-y-1">
-              <span className="font-bold text-white block">Health & Safety Acknowledgment</span>
-              <span className="text-muted-foreground leading-relaxed">
-                I declare that I am physically fit to participate in this road running event and will abide by all marshal instructions and medical stop orders issued on course.
-              </span>
-            </div>
-          </label>
-
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="pt-4 border-t border-border flex items-center justify-between">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-xs text-white hover:bg-white/10"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[6px] border border-border text-foreground font-medium text-xs hover:bg-muted"
             >
-              Back to Division
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </button>
             <button
               type="button"
               onClick={() => {
                 if (validateStep2()) setStep(3);
               }}
-              className="px-6 py-3 rounded-xl bg-brand-emerald text-white font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 flex items-center gap-2 active:scale-[0.96] transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-primary text-primary-foreground font-medium text-xs hover:bg-primary/90"
             >
-              <span>Continue to Payment ({formatNaira(fee)})</span>
-              <CreditCard className="w-4 h-4" />
+              <span>Next: Bank Payment</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       )}
 
-      {/* STEP 3: PAYMENT */}
+      {/* STEP 3: Bank Transfer Payment */}
       {step === 3 && (
-        <form onSubmit={handleSubmit} className="p-6 rounded-3xl border border-white/10 bg-card/60 space-y-6">
-          <div className="border-b border-white/10 pb-3">
-            <h3 className="font-extrabold text-lg text-white">Step 3: Bank Transfer Payment Submission</h3>
-            <p className="text-xs text-muted-foreground">Transfer {formatNaira(fee)} to the official tournament account.</p>
+        <form onSubmit={handleSubmit} className="rounded-[6px] border border-border bg-card p-6 space-y-5 shadow-subtle text-xs">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-foreground">Bank Transfer Payment</h2>
+            <p className="text-muted-foreground">
+              Registration Fee: <strong>{formatNaira(fee)}</strong> for {category === "rc-10k" ? "10K Elite" : "5K Fun Run"}.
+            </p>
           </div>
 
-          <div className="p-5 rounded-2xl border-2 border-brand-emerald/40 bg-gradient-to-r from-emerald-950/40 to-black space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-extrabold text-brand-emerald">
-                Official Marathon Account
-              </span>
-              <span className="text-xs font-mono font-bold text-white bg-white/10 px-2 py-0.5 rounded">
-                Fee: {formatNaira(fee)}
-              </span>
+          <div className="p-4 rounded-[6px] bg-muted/40 border border-border space-y-2">
+            <div className="font-semibold text-foreground">SDU Winners Sports Bank Account:</div>
+            <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+              <div>Bank: <strong className="text-foreground">{siteConfig.paymentAccount.bankName}</strong></div>
+              <div>Account #: <strong className="text-foreground font-mono">{siteConfig.paymentAccount.accountNumber}</strong></div>
+              <div className="col-span-2">Account Name: <strong className="text-foreground">{siteConfig.paymentAccount.accountName}</strong></div>
             </div>
-            <div className="space-y-1 text-xs">
-              <div className="text-muted-foreground">Bank: <span className="font-bold text-white">{siteConfig.bankDetails.bankName}</span></div>
-              <div className="text-muted-foreground">Account Name: <span className="font-bold text-white">{siteConfig.bankDetails.accountName}</span></div>
-              <div className="text-muted-foreground flex items-center gap-2">
-                <span>Account Number:</span>
-                <span className="font-mono text-base font-extrabold text-brand-emerald tracking-widest">{siteConfig.bankDetails.accountNumber}</span>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <label className="font-medium text-foreground block">
+                Sender Account Name <span className="text-destructive">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={payerName}
+                onChange={(e) => setPayerName(e.target.value)}
+                placeholder="Name on bank transfer receipt"
+                className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">Transfer Date</label>
+                <input
+                  type="date"
+                  required
+                  value={transferDate}
+                  onChange={(e) => setTransferDate(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-foreground block">
+                  Transfer Reference / Session ID <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={transferRef}
+                  onChange={(e) => setTransferRef(e.target.value)}
+                  placeholder="e.g. 09026729104829"
+                  className="w-full px-3 py-2 text-xs rounded-[6px] border border-input bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+                />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="font-bold text-white">Payer Account / Sender Name *</label>
-              <input
-                type="text"
-                value={payerName}
-                onChange={(e) => setPayerName(e.target.value)}
-                placeholder="Name as it appears on the bank transfer debit alert"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">Transfer Date *</label>
-              <input
-                type="date"
-                value={transferDate}
-                onChange={(e) => setTransferDate(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-white">Bank Reference / Session ID *</label>
-              <input
-                type="text"
-                value={transferRef}
-                onChange={(e) => setTransferRef(e.target.value)}
-                placeholder="e.g. FBN-TRF-2026-..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-brand-emerald font-mono"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="pt-4 border-t border-border flex items-center justify-between">
             <button
               type="button"
+              disabled={isSubmitting}
               onClick={() => setStep(2)}
-              className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-xs text-white hover:bg-white/10"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[6px] border border-border text-foreground font-medium text-xs hover:bg-muted"
             >
-              Back to Safety
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </button>
             <button
               type="submit"
-              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-emerald to-emerald-600 hover:from-emerald-400 hover:to-emerald-700 text-white font-extrabold text-xs shadow-xl shadow-emerald-500/20 active:scale-[0.96] transition-all"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-[6px] bg-primary text-primary-foreground font-semibold text-xs hover:bg-primary/90 disabled:opacity-50"
             >
-              Submit Registration & Generate Bib
+              {isSubmitting ? "Submitting..." : "Submit Registration & Get Bib"}
             </button>
           </div>
         </form>
+      )}
+
+      {/* STEP 4: Success State */}
+      {step === 4 && (
+        <div className="rounded-[6px] border border-border bg-card p-6 space-y-5 shadow-subtle text-xs">
+          <div className="flex items-center gap-3 border-b border-border pb-4">
+            <div className="w-9 h-9 rounded-[6px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-foreground">
+                Registration Confirmed
+              </h2>
+              <p className="text-muted-foreground">
+                Your entry has been recorded in the Southern Delta University race roster.
+              </p>
+            </div>
+          </div>
+
+          {/* Assigned Bib Box */}
+          <div className="p-5 rounded-[6px] bg-muted/40 border border-border text-center space-y-2">
+            <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Your Official Race Bib Number
+            </div>
+            <div className="font-mono text-5xl font-bold tracking-tight text-primary">
+              {assignedBib}
+            </div>
+            <div className="text-xs font-semibold text-foreground">
+              {category === "rc-10k" ? "10K Campus Elite Challenge" : "5K Campus Fun Run"}
+            </div>
+            <p className="text-[11px] text-muted-foreground max-w-sm mx-auto">
+              Please present this bib number and your student ID card at the SDU Sports Complex check-in desk on race morning (Dec 8) to collect your kit.
+            </p>
+          </div>
+
+          <div className="pt-3 border-t border-border flex items-center justify-between">
+            <Link
+              href="/marathon"
+              className="px-4 py-2 rounded-[6px] bg-primary text-primary-foreground font-medium text-xs hover:bg-primary/90"
+            >
+              Return to Marathon Hub
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );

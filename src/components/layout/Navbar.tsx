@@ -7,10 +7,9 @@ import {
   Trophy, 
   Menu, 
   X, 
-  Calendar, 
   ShieldCheck, 
   ArrowRight,
-  Flame
+  UserPlus
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -25,18 +24,16 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background/85 backdrop-blur-md">
-      {/* Top Banner Notice */}
-      <div className="bg-gradient-to-r from-amber-950/60 via-amber-900/40 to-emerald-950/60 border-b border-amber-500/20 py-1.5 px-4 text-xs text-center text-amber-200/90 font-medium flex items-center justify-center gap-2">
-        <Flame className="w-3.5 h-3.5 text-brand-gold animate-pulse" />
-        <span>
-          <strong>WFC First Edition:</strong> 16-Team Knockout underway at Southern Delta University, Ozoro. ₦80,000 in Prizes!
-        </span>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+      {/* Top Banner Notice - Clean Enterprise Announcement */}
+      <div className="bg-muted/70 border-b border-border py-1.5 px-4 text-xs text-center text-muted-foreground font-medium flex items-center justify-center gap-2">
+        <span className="font-semibold text-foreground">WFC First Edition:</span>
+        <span>16-Team Knockout Competition at Southern Delta University, Ozoro.</span>
         <Link 
           href="/football" 
-          className="underline hover:text-white inline-flex items-center gap-1 ml-1 font-semibold"
+          className="text-primary hover:underline inline-flex items-center gap-1 ml-1 font-semibold"
         >
-          View Bracket <ArrowRight className="w-3 h-3" />
+          View Tournament Bracket <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
@@ -44,19 +41,19 @@ export function Navbar() {
         {/* Brand Logo */}
         <Link 
           href="/" 
-          className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold rounded-lg p-1"
+          className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-[6px] p-1"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-gold via-amber-500 to-amber-700 text-black shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
-            <Trophy className="h-5 w-5 stroke-[2.5]" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-[6px] bg-primary text-primary-foreground font-bold text-sm">
+            <Trophy className="h-4 w-4" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold tracking-tight text-lg text-white">WSC</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-brand-gold/15 text-brand-gold border border-brand-gold/30">
+            <div className="flex items-center gap-2">
+              <span className="font-bold tracking-tight text-base text-foreground">WSC</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-[6px] bg-muted text-muted-foreground border border-border">
                 SDU Ozoro
               </span>
             </div>
-            <p className="text-[11px] text-muted-foreground font-medium hidden sm:block">
+            <p className="text-[11px] text-muted-foreground hidden sm:block">
               Winners Sports Competition
             </p>
           </div>
@@ -69,81 +66,96 @@ export function Navbar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "px-3.5 py-2 text-sm font-medium rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold",
+                "px-3 py-1.5 text-xs font-medium rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 isActive(item.href)
-                  ? "text-brand-gold bg-amber-500/10 font-semibold"
-                  : "text-muted-foreground hover:text-white hover:bg-white/5"
+                  ? "text-primary bg-primary/10 font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/football/join"
+            className={cn(
+              "px-3 py-1.5 text-xs font-medium rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary flex items-center gap-1",
+              isActive("/football/join")
+                ? "text-primary bg-primary/10 font-semibold"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+            )}
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Join Team</span>
+          </Link>
         </nav>
 
-        {/* CTAs */}
-        <div className="hidden sm:flex items-center gap-3">
+        {/* Desktop Actions */}
+        <div className="hidden sm:flex items-center gap-2">
           <Link
             href="/admin/login"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg text-muted-foreground hover:text-white hover:bg-white/5 border border-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+            className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-brand-emerald" />
+            <ShieldCheck className="w-3.5 h-3.5 text-muted-foreground" />
             <span>Admin Portal</span>
           </Link>
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg bg-gradient-to-r from-brand-gold to-amber-500 hover:from-amber-400 hover:to-amber-600 text-black shadow-md shadow-amber-500/20 active:scale-[0.96] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-[6px] bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <Calendar className="w-4 h-4" />
             <span>Register Now</span>
           </Link>
         </div>
 
-        {/* Mobile menu toggle button */}
+        {/* Mobile Menu Button */}
         <button
-          type="button"
-          aria-label={mobileMenuOpen ? "Close main navigation menu" : "Open main navigation menu"}
-          aria-expanded={mobileMenuOpen}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+          className="md:hidden p-2 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Toggle menu"
         >
-          {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-white/10 bg-background/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-2 animate-accordion-down">
+        <div className="md:hidden border-t border-border bg-background px-4 py-3 space-y-2">
           {siteConfig.nav.public.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "block px-3 py-2.5 text-base font-medium rounded-lg transition-colors",
+                "block px-3 py-2 text-xs font-medium rounded-[6px]",
                 isActive(item.href)
-                  ? "text-brand-gold bg-amber-500/10 font-bold"
-                  : "text-muted-foreground hover:text-white hover:bg-white/5"
+                  ? "bg-primary/10 text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {item.label}
             </Link>
           ))}
-          <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
+          <Link
+            href="/football/join"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-[6px] text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Join Team with Invite Code</span>
+          </Link>
+          <div className="pt-2 border-t border-border flex flex-col gap-2">
             <Link
               href="/admin/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-lg border border-white/15 text-white hover:bg-white/5"
+              className="px-3 py-2 text-xs font-medium text-center rounded-[6px] border border-border text-foreground hover:bg-muted"
             >
-              <ShieldCheck className="w-4 h-4 text-brand-emerald" />
-              <span>Admin Portal Login</span>
+              Admin Portal
             </Link>
             <Link
               href="/events"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 text-sm font-bold px-4 py-3 rounded-lg bg-brand-gold text-black shadow-lg shadow-amber-500/25"
+              className="px-3 py-2 text-xs font-semibold text-center rounded-[6px] bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Calendar className="w-4 h-4" />
-              <span>Join Competition</span>
+              Register Now
             </Link>
           </div>
         </div>

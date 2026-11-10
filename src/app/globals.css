@@ -4,65 +4,105 @@
 
 @layer base {
   :root {
-    --background: 222 47% 7%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Single Professional Primary: Enterprise Blue */
+    --primary: 221 83% 53%;
+    --primary-hover: 221 83% 45%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 6px;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 10%;
+    --card: 222 47% 9%;
     --card-foreground: 210 40% 98%;
 
     --popover: 222 47% 9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 38 92% 50%; /* Electric Gold / Trophy */
-    --primary-foreground: 222 47% 7%;
+    /* Single Professional Primary: Enterprise Blue */
+    --primary: 217 91% 60%;
+    --primary-hover: 217 91% 52%;
+    --primary-foreground: 222 47% 6%;
 
-    --secondary: 160 84% 39%; /* Pitch Emerald */
+    --secondary: 217 33% 14%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217 33% 17%;
+    --muted: 217 33% 14%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 217 33% 20%;
+    --accent: 217 33% 14%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217 33% 18%;
     --input: 217 33% 18%;
-    --ring: 38 92% 50%;
-
-    --radius: 0.75rem;
+    --ring: 217 91% 60%;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+    border-radius: 6px;
   }
-  body {
-    @apply bg-background text-foreground antialiased selection:bg-brand-gold selection:text-black;
+  
+  html, body {
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* Tabular figures for athletic scores, stopwatches and bib numbers */
+  /* Accessible hit area minimum for buttons & links */
+  button, a {
+    min-height: 36px;
+  }
+
+  /* Form inputs strict 6px radius and clean enterprise styling */
+  input, select, textarea {
+    border-radius: 6px !important;
+  }
+
+  /* Tabular figures for athletic scores, timers, and financial values */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom athletic card hover effect */
-.athletic-card {
-  position: relative;
-  background: linear-gradient(135deg, rgba(17, 24, 39, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
-}
-
-.athletic-card:hover {
-  border-color: rgba(245, 158, 11, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(245, 158, 11, 0.15);
-  transform: translateY(-2px);
+/* Enterprise Card - Clean, Flat, Crisp Border, Extremely Subtle Shadow */
+.enterprise-card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 /* Reduced motion accessibility */
@@ -73,23 +113,20 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .athletic-card:hover {
-    transform: none !important;
-  }
 }
 
-/* Custom scrollbar */
+/* Clean minimal scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
+  background: hsl(var(--border));
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 158, 11, 0.4);
+  background: hsl(var(--muted-foreground) / 0.4);
 }

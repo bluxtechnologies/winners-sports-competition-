@@ -1,7 +1,7 @@
 "use client";
 
 import { Match, Team } from "@/types";
-import { Trophy, CheckCircle2, AlertCircle } from "lucide-react";
+import { Trophy, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TournamentBracketProps {
@@ -22,7 +22,7 @@ export function TournamentBracket({ matches, teams }: TournamentBracketProps) {
   const renderMatchCard = (match?: Match, label?: string) => {
     if (!match) {
       return (
-        <div className="w-56 p-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02] text-xs text-muted-foreground flex items-center justify-center">
+        <div className="w-56 p-3 rounded-[6px] border border-dashed border-border bg-muted/20 text-xs text-muted-foreground flex items-center justify-center">
           Match TBD
         </div>
       );
@@ -35,14 +35,16 @@ export function TournamentBracket({ matches, teams }: TournamentBracketProps) {
     const teamBWon = match.winnerTeamId && match.winnerTeamId === match.teamBId;
 
     return (
-      <div className="w-60 rounded-xl border border-white/10 bg-card/90 shadow-lg shadow-black/40 overflow-hidden text-xs transition-all hover:border-brand-gold/40 hover:shadow-amber-500/10">
-        <div className="px-3 py-1.5 bg-white/5 border-b border-white/10 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
-          <span className="font-semibold text-white/90">
+      <div className="w-56 rounded-[6px] border border-border bg-card shadow-subtle overflow-hidden text-xs">
+        <div className="px-2.5 py-1.5 bg-muted/40 border-b border-border flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+          <span className="font-semibold text-foreground">
             {label || `M#${match.matchNumber}`}
           </span>
           <span className={cn(
-            "text-[10px] px-1.5 py-0.5 rounded uppercase font-bold",
-            isCompleted ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+            "text-[10px] px-1.5 py-0.5 rounded-[6px] uppercase font-semibold",
+            isCompleted 
+              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800" 
+              : "bg-muted text-muted-foreground border border-border"
           )}>
             {isCompleted ? "Finished" : match.status}
           </span>
@@ -50,41 +52,47 @@ export function TournamentBracket({ matches, teams }: TournamentBracketProps) {
 
         {/* Team A */}
         <div className={cn(
-          "px-3 py-2 flex items-center justify-between border-b border-white/5 transition-colors",
-          teamAWon ? "bg-amber-500/10 font-bold text-white" : "text-muted-foreground"
+          "px-2.5 py-2 flex items-center justify-between border-b border-border/50",
+          teamAWon ? "bg-muted/50 font-semibold text-foreground" : "text-muted-foreground"
         )}>
           <div className="flex items-center gap-2 truncate pr-2">
-            <span className="w-2 h-2 rounded-full flex-shrink-0 bg-white/20" />
+            <span className={cn(
+              "w-1.5 h-1.5 rounded-[6px] flex-shrink-0",
+              teamAWon ? "bg-primary" : "bg-muted-foreground/40"
+            )} />
             <span className="truncate">{teamA ? teamA.name : "Winner TBD"}</span>
           </div>
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {match.isPenaltyShootout && match.scoreAPenalties !== undefined && (
-              <span className="text-[10px] text-amber-400/80 font-mono">({match.scoreAPenalties}p)</span>
+              <span className="text-[10px] text-muted-foreground font-mono">({match.scoreAPenalties}p)</span>
             )}
-            <span className={cn("font-mono font-bold text-sm", teamAWon ? "text-brand-gold" : "text-white/80")}>
+            <span className={cn("font-mono font-bold text-xs", teamAWon ? "text-primary" : "text-foreground")}>
               {match.status === "scheduled" ? "-" : match.scoreA}
             </span>
-            {teamAWon && <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />}
+            {teamAWon && <CheckCircle2 className="w-3 h-3 text-primary" />}
           </div>
         </div>
 
         {/* Team B */}
         <div className={cn(
-          "px-3 py-2 flex items-center justify-between transition-colors",
-          teamBWon ? "bg-amber-500/10 font-bold text-white" : "text-muted-foreground"
+          "px-2.5 py-2 flex items-center justify-between",
+          teamBWon ? "bg-muted/50 font-semibold text-foreground" : "text-muted-foreground"
         )}>
           <div className="flex items-center gap-2 truncate pr-2">
-            <span className="w-2 h-2 rounded-full flex-shrink-0 bg-white/20" />
+            <span className={cn(
+              "w-1.5 h-1.5 rounded-[6px] flex-shrink-0",
+              teamBWon ? "bg-primary" : "bg-muted-foreground/40"
+            )} />
             <span className="truncate">{teamB ? teamB.name : "Winner TBD"}</span>
           </div>
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {match.isPenaltyShootout && match.scoreBPenalties !== undefined && (
-              <span className="text-[10px] text-amber-400/80 font-mono">({match.scoreBPenalties}p)</span>
+              <span className="text-[10px] text-muted-foreground font-mono">({match.scoreBPenalties}p)</span>
             )}
-            <span className={cn("font-mono font-bold text-sm", teamBWon ? "text-brand-gold" : "text-white/80")}>
+            <span className={cn("font-mono font-bold text-xs", teamBWon ? "text-primary" : "text-foreground")}>
               {match.status === "scheduled" ? "-" : match.scoreB}
             </span>
-            {teamBWon && <CheckCircle2 className="w-3.5 h-3.5 text-brand-gold" />}
+            {teamBWon && <CheckCircle2 className="w-3 h-3 text-primary" />}
           </div>
         </div>
       </div>
@@ -93,79 +101,87 @@ export function TournamentBracket({ matches, teams }: TournamentBracketProps) {
 
   return (
     <div className="w-full space-y-6">
-      <div className="flex items-center justify-between pb-2 border-b border-white/10">
+      <div className="flex items-center justify-between pb-3 border-b border-border">
         <div>
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-brand-gold" />
-            <span>16-Team Single Elimination Bracket</span>
+          <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Trophy className="w-4 h-4 text-primary" />
+            <span>16-Team Single Elimination Knockout Bracket</span>
           </h3>
-          <p className="text-xs text-muted-foreground">
-            Monkey Post 5-a-side Knockout tree at Southern Delta University, Ozoro
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Round of 16 through to the Championship Final at SDU Sports Complex
           </p>
         </div>
-        <div className="text-xs bg-amber-500/10 text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/20 font-medium hidden sm:block">
-          ₦80,000 Total Prize Pool
+        <div className="text-xs text-muted-foreground">
+          Official SDU Tournament Draw
         </div>
       </div>
 
-      {/* Bracket Tree (Scrollable on mobile) */}
-      <div className="overflow-x-auto pb-6 pt-2">
-        <div className="min-w-[1100px] flex items-center justify-between gap-6">
-          {/* Column 1: Round of 16 */}
-          <div className="flex flex-col gap-5 w-60">
-            <div className="text-xs uppercase tracking-wider font-bold text-brand-gold/90 text-center pb-2 border-b border-brand-gold/20">
+      {/* Bracket Tree Container */}
+      <div className="overflow-x-auto pb-6">
+        <div className="min-w-[960px] flex items-stretch justify-between gap-6">
+          {/* Round of 16 */}
+          <div className="flex-1 space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-1">
               Round of 16 (8 Matches)
             </div>
-            {r16Matches.map((m, idx) => (
-              <div key={m.id}>
-                {renderMatchCard(m, `Match ${idx + 1}`)}
-              </div>
-            ))}
+            <div className="space-y-4 pt-1">
+              {r16Matches.slice(0, 8).map((m, idx) => (
+                <div key={m.id}>
+                  {renderMatchCard(m, `R16 Match #${idx + 1}`)}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Column 2: Quarter-Finals */}
-          <div className="flex flex-col justify-around gap-16 w-60">
-            <div className="text-xs uppercase tracking-wider font-bold text-white text-center pb-2 border-b border-white/20">
+          {/* Quarter Finals */}
+          <div className="flex-1 space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-1">
               Quarter-Finals (4 Matches)
             </div>
-            {qfMatches.map((m, idx) => (
-              <div key={m.id}>
-                {renderMatchCard(m, `Quarter-Final ${idx + 1}`)}
-              </div>
-            ))}
+            <div className="space-y-12 pt-6">
+              {qfMatches.slice(0, 4).map((m, idx) => (
+                <div key={m.id}>
+                  {renderMatchCard(m, `QF Match #${idx + 1}`)}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Column 3: Semi-Finals */}
-          <div className="flex flex-col justify-around gap-40 w-60">
-            <div className="text-xs uppercase tracking-wider font-bold text-white text-center pb-2 border-b border-white/20">
+          {/* Semi Finals */}
+          <div className="flex-1 space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-1">
               Semi-Finals (2 Matches)
             </div>
-            {sfMatches.map((m, idx) => (
-              <div key={m.id}>
-                {renderMatchCard(m, `Semi-Final ${idx + 1}`)}
-              </div>
-            ))}
+            <div className="space-y-32 pt-16">
+              {sfMatches.slice(0, 2).map((m, idx) => (
+                <div key={m.id}>
+                  {renderMatchCard(m, `SF Match #${idx + 1}`)}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Column 4: Grand Final & 3rd Place */}
-          <div className="flex flex-col justify-center gap-10 w-64">
-            <div className="p-4 rounded-2xl border-2 border-brand-gold bg-gradient-to-b from-amber-500/15 via-black/40 to-black/60 shadow-xl shadow-amber-500/10 space-y-3">
-              <div className="flex items-center justify-center gap-2 text-brand-gold font-extrabold text-xs uppercase tracking-widest text-center">
-                <Trophy className="w-4 h-4" />
-                <span>Grand Final (₦50,000)</span>
-              </div>
-              {renderMatchCard(finalMatch, "Championship Final")}
-              <div className="text-[11px] text-center text-muted-foreground pt-1">
-                Runner-up receives ₦20,000
-              </div>
+          {/* Finals & 3rd Place */}
+          <div className="flex-1 space-y-3">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-1">
+              Championship & 3rd
             </div>
-
-            {/* 3rd Place Playoff */}
-            <div className="p-3.5 rounded-xl border border-white/15 bg-white/[0.02] space-y-2">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-200/80 text-center">
-                3rd Place Playoff (₦10,000)
+            <div className="space-y-10 pt-20">
+              <div>
+                <div className="text-[11px] font-semibold text-primary uppercase mb-1">
+                  Final (Championship)
+                </div>
+                {renderMatchCard(finalMatch, "Final")}
               </div>
-              {renderMatchCard(thirdPlaceMatch, "3rd Place Match")}
+
+              {thirdPlaceMatch && (
+                <div>
+                  <div className="text-[11px] font-semibold text-muted-foreground uppercase mb-1">
+                    3rd Place Playoff
+                  </div>
+                  {renderMatchCard(thirdPlaceMatch, "3rd Place")}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -48,6 +48,7 @@ export type UserRole =
   | 'football_manager' 
   | 'marathon_manager' 
   | 'finance_manager' 
+  | 'captain'
   | 'participant';
 
 export interface Profile {
@@ -57,6 +58,15 @@ export interface Profile {
   phone?: string;
   role: UserRole;
   avatarUrl?: string;
+  createdAt: string;
+}
+
+export interface CaptainAccount {
+  id: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  teamId: string;
   createdAt: string;
 }
 
@@ -75,10 +85,21 @@ export interface WSCEvent {
   registrationDeadline: string;
   registrationFee: number;
   maxParticipants: number;
-  prizePoolTotal: number;
-  prizeFirst: number;
-  prizeSecond: number;
-  prizeThird: number;
+  
+  // Dynamic Tournament Parameters (Editable from Admin)
+  maxTeams: number;               // e.g. 16 Teams
+  squadSize: number;              // e.g. 7 Players Roster
+  playersOnPitch: number;         // e.g. 5 on Pitch
+  prizePoolTotal: number;         // e.g. ₦80,000 Total Cash Prize Pool
+  prizeFirst: number;             // e.g. ₦50,000 Champion
+  prizeSecond: number;            // e.g. ₦20,000 Runner-up
+  prizeThird: number;             // e.g. ₦10,000 Third place
+  halfDurationMinutes: number;    // e.g. 20 (20 + 20 Min Regulation Match Duration)
+  extraTimeMinutes: number;       // e.g. 5
+  gracePeriodMinutes: number;     // e.g. 15 Mins Walkover Grace Period
+  yellowCardFine: number;         // e.g. 1000
+  redCardFine: number;            // e.g. 3000
+
   rulesSummary: string;
   bannerUrl?: string;
   contactEmail: string;
@@ -91,9 +112,8 @@ export interface Player {
   fullName: string;
   email: string;
   phone: string;
-  matricNumber: string;
   verificationStatus: 'unverified' | 'verified' | 'flagged';
-  studentIdCardUrl?: string;
+  joinedViaInvite?: boolean;
 }
 
 export interface TeamPlayer extends Player {
@@ -107,12 +127,11 @@ export interface Team {
   eventId: string;
   name: string;
   shortCode: string;
-  departmentOrHall: string;
   logoUrl?: string;
   captainName: string;
   captainEmail: string;
   captainPhone: string;
-  captainMatric: string;
+  inviteCode: string; // Shareable invite code for teammates to join
   seedNumber?: number;
   bracketPosition?: number;
   status: 'pending' | 'confirmed' | 'eliminated' | 'active';
@@ -182,7 +201,6 @@ export interface Participant {
   fullName: string;
   email: string;
   phone: string;
-  matricNumber?: string;
   gender: 'male' | 'female' | 'other';
   dateOfBirth: string;
   emergencyContactName: string;
