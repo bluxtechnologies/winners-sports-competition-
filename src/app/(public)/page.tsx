@@ -303,10 +303,10 @@ export default function HomePage() {
             <div className="p-3 rounded-[6px] bg-background border border-border space-y-1">
               <div className="font-semibold text-foreground flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
-                <span>Dynamic Configuration</span>
+                <span>Live Event Governance</span>
               </div>
               <p className="text-muted-foreground text-[11px]">
-                Prizes, roster limits, duration, and fines are configured via the admin console and update in real-time.
+                Official prizes, verified rosters, match schedules, and disciplinary rules update dynamically in real time.
               </p>
             </div>
           </div>

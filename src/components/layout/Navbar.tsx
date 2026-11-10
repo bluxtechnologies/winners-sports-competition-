@@ -7,14 +7,13 @@ import {
   Trophy, 
   Menu, 
   X, 
-  ShieldCheck, 
   ArrowRight,
   UserPlus
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-export function Navbar() {
+export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -25,7 +24,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
-      {/* Top Banner Notice - Clean Enterprise Announcement */}
+      {/* Top Banner Notice */}
       <div className="bg-muted/70 border-b border-border py-1.5 px-4 text-xs text-center text-muted-foreground font-medium flex items-center justify-center gap-2">
         <span className="font-semibold text-foreground">WFC First Edition:</span>
         <span>16-Team Knockout Competition at Southern Delta University, Ozoro.</span>
@@ -75,28 +74,16 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/football/join"
-            className={cn(
-              "px-3 py-1.5 text-xs font-medium rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary flex items-center gap-1",
-              isActive("/football/join")
-                ? "text-primary bg-primary/10 font-semibold"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted"
-            )}
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>Join Team</span>
-          </Link>
         </nav>
 
-        {/* Desktop Actions */}
+        {/* Guest Public Actions */}
         <div className="hidden sm:flex items-center gap-2">
           <Link
-            href="/admin/login"
-            className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-[6px] text-muted-foreground hover:text-foreground hover:bg-muted border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            href="/football/join"
+            className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-[6px] border border-border bg-background hover:bg-muted text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-muted-foreground" />
-            <span>Admin Portal</span>
+            <UserPlus className="w-3.5 h-3.5 text-primary" />
+            <span>Join Team</span>
           </Link>
           <Link
             href="/events"
@@ -134,21 +121,14 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/football/join"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-[6px] text-muted-foreground hover:bg-muted hover:text-foreground"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Join Team with Invite Code</span>
-          </Link>
           <div className="pt-2 border-t border-border flex flex-col gap-2">
             <Link
-              href="/admin/login"
+              href="/football/join"
               onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-xs font-medium text-center rounded-[6px] border border-border text-foreground hover:bg-muted"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[6px] border border-border text-foreground hover:bg-muted"
             >
-              Admin Portal
+              <UserPlus className="w-4 h-4 text-primary" />
+              <span>Join Team with Invite Code</span>
             </Link>
             <Link
               href="/events"
@@ -163,3 +143,4 @@ export function Navbar() {
     </header>
   );
 }
+export { Navbar };

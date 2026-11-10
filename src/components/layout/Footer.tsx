@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Trophy, ShieldCheck } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
 export function Footer() {
@@ -91,18 +91,12 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Platform Administration */}
+          {/* Tournament Information */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">
-              Platform & Administration
+              Tournament Information
             </h4>
             <ul className="space-y-1.5 text-xs">
-              <li>
-                <Link href="/admin/login" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Admin Login</span>
-                </Link>
-              </li>
               <li>
                 <Link href="/events" className="hover:text-foreground transition-colors">
                   Event Directory
@@ -116,6 +110,11 @@ export function Footer() {
               <li>
                 <Link href="/about" className="hover:text-foreground transition-colors">
                   About WSC Organisation
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-foreground transition-colors">
+                  Contact Committee
                 </Link>
               </li>
             </ul>

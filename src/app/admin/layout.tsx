@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { 
   Trophy, 
   LayoutDashboard, 
@@ -16,8 +16,7 @@ import {
   Menu, 
   X,
   ExternalLink,
-  ShieldCheck,
-  UserCheck
+  ShieldCheck
 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -28,11 +27,46 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   // If on login page, render clean full-width layout without admin sidebar
-  if (pathname === "/admin/login") {
+  const isLoginPage = pathname === "/admin/login";
+
+  useEffect(() => {
+    if (isLoginPage) {
+      setIsAuthenticated(true);
+      return;
+    }
+
+    const auth = typeof window !== "undefined" && sessionStorage.getItem("wsc_admin_auth") === "true";
+    if (!auth) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [pathname, isLoginPage, router]);
+
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("wsc_admin_auth");
+      sessionStorage.removeItem("wsc_admin_role");
+    }
+    router.push("/admin/login");
+  };
+
+  if (isLoginPage) {
     return <>{children}</>;
+  }
+
+  // Prevent flicker while checking auth
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-xs text-muted-foreground">
+        Verifying administrative credentials...
+      </div>
+    );
   }
 
   const navItems = [
@@ -112,15 +146,15 @@ export default function AdminLayout({
               className="flex-1 px-2 py-1.5 rounded-[6px] hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center gap-1"
             >
               <ExternalLink className="w-3 h-3" />
-              <span>Public Portal</span>
+              <span>Public Site</span>
             </Link>
-            <Link
-              href="/admin/login"
+            <button
+              onClick={handleLogout}
               className="px-2 py-1.5 rounded-[6px] hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center gap-1"
               title="Logout"
             >
               <LogOut className="w-3 h-3" />
-            </Link>
+            </button>
           </div>
         </div>
       </aside>
@@ -137,7 +171,7 @@ export default function AdminLayout({
               {mobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div className="text-xs text-muted-foreground hidden sm:block">
-              Winners Sports Competition Platform • Admin Console
+              Winners Sports Competition Platform • Private Administration
             </div>
           </div>
 
@@ -146,6 +180,12 @@ export default function AdminLayout({
               <ShieldCheck className="w-3.5 h-3.5 text-primary" />
               <span>Session: <strong>Authenticated</strong></span>
             </div>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-[6px] hover:bg-muted"
+            >
+              Log Out
+            </button>
           </div>
         </header>
 

@@ -8,7 +8,6 @@ import {
   ShieldCheck, 
   Lock, 
   Mail, 
-  ArrowRight, 
   ArrowLeft
 } from "lucide-react";
 
@@ -18,11 +17,19 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("••••••••");
 
   const handleRoleSelect = (roleName: string) => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("wsc_admin_auth", "true");
+      sessionStorage.setItem("wsc_admin_role", roleName);
+    }
     router.push("/admin/dashboard");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("wsc_admin_auth", "true");
+      sessionStorage.setItem("wsc_admin_role", "super_admin");
+    }
     router.push("/admin/dashboard");
   };
 
@@ -45,7 +52,7 @@ export default function AdminLoginPage() {
         {/* 1-Click Fast Role Simulator */}
         <div className="p-4 rounded-[6px] border border-border bg-card space-y-2.5 shadow-subtle">
           <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Role Simulator (1-Click Authentication)
+            Authorized Committee Access
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
