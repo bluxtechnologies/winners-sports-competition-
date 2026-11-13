@@ -14,10 +14,15 @@ export function getServerSupabase() {
   if (!isServerSupabaseConfigured) {
     return null;
   }
-  return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
+  try {
+    return createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    });
+  } catch (err) {
+    console.error("[WSC] Server Supabase client initialization failed:", err);
+    return null;
+  }
 }

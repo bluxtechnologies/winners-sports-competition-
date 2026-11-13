@@ -19,6 +19,13 @@ export const siteConfig = {
     currencySymbol: "₦",
   },
 
+  // Alias used by register pages
+  paymentAccount: {
+    bankName: "First Bank of Nigeria",
+    accountNumber: "3123456789",
+    accountName: "Winners Sports Competition Committee",
+  },
+
   // Football Configuration (WFC First Edition)
   football: {
     name: "Winners Football Competition",
