@@ -85,12 +85,11 @@ CREATE TABLE IF NOT EXISTS public.teams (
   event_id UUID NOT NULL REFERENCES public.events(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   short_code TEXT,
-  department_or_hall TEXT,
+  invite_code TEXT UNIQUE NOT NULL, -- Captain shareable invite code (e.g. WFC-ENG-4912)
   logo_url TEXT,
   captain_name TEXT NOT NULL,
   captain_email TEXT NOT NULL,
   captain_phone TEXT NOT NULL,
-  captain_matric TEXT NOT NULL,
   seed_number INTEGER,
   bracket_position INTEGER,
   status TEXT NOT NULL DEFAULT 'pending'
@@ -104,7 +103,6 @@ CREATE TABLE IF NOT EXISTS public.players (
   full_name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   phone TEXT,
-  matric_number TEXT UNIQUE NOT NULL,
   student_id_card_url TEXT,
   verification_status TEXT NOT NULL DEFAULT 'unverified'
     CHECK (verification_status IN ('unverified', 'verified', 'flagged')),
@@ -143,7 +141,6 @@ CREATE TABLE IF NOT EXISTS public.participants (
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
-  matric_number TEXT,
   gender TEXT CHECK (gender IN ('male', 'female', 'other')),
   date_of_birth DATE,
   emergency_contact_name TEXT NOT NULL,
